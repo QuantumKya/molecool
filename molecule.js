@@ -127,7 +127,7 @@ class Molecule {
 
 
 
-        const offsetVectors = offsetMaker(neighbors, initAngle, centerPos, anchorPos);
+        const offsetVectors = offsetMaker(neighbors, centerPos, anchorPos);
 
 
 
@@ -157,7 +157,7 @@ class Molecule {
     }
     
     rotateAll(atomId, anchorId, initAngle) {
-        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, initAngle, centerPos, anchorPos) => {
+        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, centerPos, anchorPos) => {
 
             const anchorangle = anchorPos.clone().subtract(centerPos).angle();
 
@@ -172,8 +172,33 @@ class Molecule {
         });
     }
 
+    rotateOne(atomId, anchorId, initAngle) {
+        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, centerPos, anchorPos) => {
+
+            const distanceOut = anchorPos.clone().subtract(centerPos).length();
+
+            const offsetvectors = neighbors.map(
+                (neigh) => this.atoms.indexOf(neigh) === anchorId ? polarVec(initAngle, distanceOut) : neigh.pos.clone().subtract(centerPos)
+            );
+            return offsetvectors;
+
+        });
+    }
+
+    sameDistance(atomId, anchorId, initAngle) {
+        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, centerPos, anchorPos) => {
+
+            const distanceOut = anchorPos.clone().subtract(centerPos).length();
+
+            const offsetVectors = neighbors.map(
+                (neigh) => polarVec(neigh.pos.clone().subtract(centerPos).angle(), distanceOut)
+            );
+            return offsetVectors;
+        });
+    }
+
     equalSpacing(atomId, anchorId, initAngle) {
-        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, initAngle) => {
+        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors) => {
             
             const avgDistanceOut = neighbors.reduce(
                 (pn, neigh) => pn + neigh.pos.distance(centerPos),

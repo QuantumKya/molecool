@@ -157,7 +157,24 @@ function init() {
                     clearDraw('mouseangleselect');
 
                     if (confirm(`Organize neighbors of atom ${centerId},\nwith anchor of atom ${anchorId},\nat a horizontal angle of ${(-angle * 180 / Math.PI).toPrecision(4+2)}º?`)) {
-                        mol.rotateAll(centerId, anchorId, angle);
+                        alert(dropdowns['organizeoptions']);
+                        switch (dropdowns['organizeoptions']) {
+                            case 'rotate one':
+                                mol.rotateOne(centerId, anchorId, angle);
+                                break;
+                            case 'rotate all':
+                                mol.rotateAll(centerId, anchorId, angle);
+                                break;
+                            case 'equal distance':
+                                mol.sameDistance(centerId, anchorId, angle);
+                                break;
+                            case 'equal angles':
+                                mol.equalSpacing(centerId, anchorId, angle);
+                                break;
+                            default:
+                                alert('Yo that is not a thing that is in the dropdown, how did you get that?!');
+                                break;
+                        }
                         organizeStage = 'null';
                     }
                     break;
