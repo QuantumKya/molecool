@@ -52,4 +52,4 @@ Well, when it's at such a small project, anyway.
 
 Thanks for reading my programming-related yapping, and I'll write for you again next time!
 
-[<-- Previous Devlog](DEVLOG_4.md)<!--   [Next Devlog --\>](DEVLOG_6.md)-->
+[<-- Previous Devlog](DEVLOG_4.md)   [Next Devlog -->](DEVLOG_6.md)

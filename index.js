@@ -99,6 +99,17 @@ function loadTemplateMolecule() {
 }
 
 
+function runOrganize(centerId, anchorId, angle) {
+    const option = dropdowns['organizeoptions'];
+    if (!Object.keys(Molecule.transformFunctions).includes(option)) {
+        alert('Yo that is not a thing that is in the dropdown, how did you get that?!');
+        return;
+    }
+
+    mol.organizeNeighbors(centerId, anchorId, angle, Molecule.transformFunctions[option]);
+}
+
+
 
 let draggingAtom = -1;
 let lastMousePos = new Victor(0, 0);
@@ -128,13 +139,17 @@ function init() {
     
         }
         else if (e.button === 2) {
+
+            const orgoption = dropdowns['organizeoptions'];
     
             switch (organizeStage) {
                 case 'null':
+                    if (!orgoption) break;
                     if (hovereeId === undefined) {
                         organizeStage = 'null';
                         break;
                     }
+
                     centerId = hovereeId;
                     organizeStage = 'setAnchor';
                     break;
@@ -145,8 +160,46 @@ function init() {
                         break;
                     }
                     anchorId = hovereeId;
-                    organizeStage = 'setAngle';
-                    break;
+
+                    console.log(Molecule.transformFunctions);
+                    if (Molecule.transformFunctions[orgoption].needsAngle) {
+                        organizeStage = 'setAngle';
+    
+                        setDraw('mouseangleselect', (ctx) => {
+                            const mousepos = getMousePos();
+                            const centerpos = mol.atoms[centerId].pos;
+    
+                            let angle = mousepos.subtract(centerpos).angle();
+                            if (SHIFTING) angle = roundToInterval(angle, Math.PI / 4);
+    
+                            const atomrad = mol.atoms[anchorId].pos.clone().subtract(centerpos).length();
+                            const projpoint = polarVec(angle, atomrad).add(centerpos);
+    
+                            const angleradius = mol.atoms[centerId].radius + 10;
+    
+                            ctx.save();
+                            
+                            ctx.globalAlpha = 0.5;
+    
+                            ctx.strokeStyle = '#000000';
+                            ctx.lineWidth = 4;
+                            ctx.beginPath();
+                            ctx.moveTo(canvas.width, centerpos.y);
+                            ctx.lineTo(centerpos.x, centerpos.y);
+                            ctx.arc(centerpos.x, centerpos.y, angleradius, 0, angle, angle < 0);
+                            ctx.moveTo(centerpos.x, centerpos.y);
+                            ctx.lineTo(projpoint.x, projpoint.y);
+                            ctx.stroke();
+    
+                            ctx.restore();
+                        });
+                        break;
+                    }
+                    else {
+                        runOrganize(centerId, anchorId, 0);
+                        organizeStage = 'null';
+                        break;
+                    }
                 case 'setAngle':
                     const mousepos = getMousePos();
                     const centerpos = mol.atoms[centerId].pos;
@@ -154,27 +207,12 @@ function init() {
                     let angle = mousepos.subtract(centerpos).angle();
                     if (SHIFTING) angle = roundToInterval(angle, Math.PI / 4);
 
-                    clearDraw('mouseangleselect');
-
+                    
                     if (confirm(`Organize neighbors of atom ${centerId},\nwith anchor of atom ${anchorId},\nat a horizontal angle of ${(-angle * 180 / Math.PI).toPrecision(4+2)}º?`)) {
-                        alert(dropdowns['organizeoptions']);
-                        switch (dropdowns['organizeoptions']) {
-                            case 'rotate one':
-                                mol.rotateOne(centerId, anchorId, angle);
-                                break;
-                            case 'rotate all':
-                                mol.rotateAll(centerId, anchorId, angle);
-                                break;
-                            case 'equal distance':
-                                mol.sameDistance(centerId, anchorId, angle);
-                                break;
-                            case 'equal angles':
-                                mol.equalSpacing(centerId, anchorId, angle);
-                                break;
-                            default:
-                                alert('Yo that is not a thing that is in the dropdown, how did you get that?!');
-                                break;
-                        }
+                        
+                        clearDraw('mouseangleselect');
+
+                        runOrganize(centerId, anchorId, angle);
                         organizeStage = 'null';
                     }
                     break;
@@ -216,48 +254,20 @@ function init() {
         else {
             canvas.style.cursor = 'grab';
         }
-
-        if (organizeStage === 'setAngle') {
-            const mousepos = getMousePos();
-            const centerpos = mol.atoms[centerId].pos;
-
-            let angle = mousepos.subtract(centerpos).angle();
-            if (SHIFTING) angle = roundToInterval(angle, Math.PI / 4);
-
-            setDraw((ctx) => {
-                const atomrad = mol.atoms[anchorId].pos.clone().subtract(centerpos).length();
-                const projpoint = polarVec(angle, atomrad).add(centerpos);
-
-                const angleradius = mol.atoms[centerId].radius + 10;
-
-                ctx.save();
-                
-                ctx.globalAlpha = 0.5;
-
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(canvas.width, centerpos.y);
-                ctx.lineTo(centerpos.x, centerpos.y);
-                ctx.arc(centerpos.x, centerpos.y, angleradius, 0, angle, angle < 0);
-                ctx.moveTo(centerpos.x, centerpos.y);
-                ctx.lineTo(projpoint.x, projpoint.y);
-                ctx.stroke();
-
-                ctx.restore();
-            }, 'mouseangleselect');
-        }
     });
 }
 
-        
+
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Shift') SHIFTING = true;
     if (e.key === 'Control') CTRLING = true;
 
     if (e.key === 'Escape') {
         
-        if (organizeStage !== 'null') organizeStage = 'null';
+        if (organizeStage !== 'null') {
+            if (organizeStage === 'setAngle') clearDraw('mouseangleselect');
+            organizeStage = 'null';
+        }
         
     }
 });
@@ -268,7 +278,7 @@ document.addEventListener('keyup', (e) => {
 
 
 let drawInstructions = {};
-function setDraw(drawFunc, name) {
+function setDraw(name, drawFunc) {
     drawInstructions[name] = drawFunc;
 }
 function clearDraw(name) {

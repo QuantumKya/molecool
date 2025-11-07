@@ -39,7 +39,7 @@
                 <div style="display: flex; flex-direction: column; gap: 15px; padding: 10px;">
                     <div class="dropdown" id="templatemolecules">
                         <button class="dropdownbtn" onclick="dropdown('templatemolecules')">Template Molecules</button>
-                        <p class="dropdown-display">bnrwef</p>
+                        <p class="dropdown-display">Selected: none</p>
                         <div class="dropdown-box">
                             <span class="dropdown-item">H2O</span>
                             <span class="dropdown-item">Methane</span>
@@ -66,11 +66,13 @@
 
                 <div class="dropdown" id="organizeoptions">
                     <button class="dropdownbtn" onclick="dropdown('organizeoptions')">Organize Option</button>
+                    <p class="dropdown-display">Selected: none</p>
                     <div class="dropdown-box">
                         <span class="dropdown-item">Rotate One</span>
                         <span class="dropdown-item">Rotate All</span>
-                        <span class="dropdown-item">Equal Distance</span>
-                        <span class="dropdown-item">Equal Angles</span>
+                        <span class="dropdown-item">Same Distance</span>
+                        <span class="dropdown-item">Equally Angled</span>
+                        <span class="dropdown-item">T Intersection</span>
                     </div>
                 </div>
 
@@ -86,7 +88,7 @@
     </div>
 
     <script defer>
-        adddropdown('organizeoptions');
+        adddropdown('organizeoptions', true, true);
         adddropdown('templatemolecules', true, true);
     </script>
 

@@ -91,7 +91,7 @@ class Molecule {
         }
     }
 
-    organizeNeighbors(atomId, anchorId, initAngle, offsetMaker) {
+    organizeNeighbors(atomId, anchorId, initAngle, transformation) {
         const centerPos = this.atoms[atomId].pos.clone();
         const anchorPos = this.atoms[anchorId].pos.clone();
 
@@ -127,7 +127,8 @@ class Molecule {
 
 
 
-        const offsetVectors = offsetMaker(neighbors, centerPos, anchorPos);
+        const offsetVectors = transformation.function(neighbors, initAngle, centerPos, anchorPos, this);
+        if (offsetVectors.length === 0) return;
 
 
 
@@ -155,70 +156,90 @@ class Molecule {
         };
         moveAnimation();
     }
-    
-    rotateAll(atomId, anchorId, initAngle) {
-        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, centerPos, anchorPos) => {
 
-            const anchorangle = anchorPos.clone().subtract(centerPos).angle();
+    static transformFunctions = {
+        'rotate one': {
+            needsAngle: true,
+            function: (neighbors, initAngle, centerPos, anchorPos, mol) => {
 
-            const offsetVectors = neighbors.map((neigh) => {
-                const diffvec = neigh.pos.clone().subtract(centerPos);
-                const ang = diffvec.angle() + initAngle - anchorangle;
+                const distanceOut = anchorPos.clone().subtract(centerPos).length();
 
-                return polarVec(ang, diffvec.length());
-            });
-            return offsetVectors;
+                const offsetvectors = neighbors.map(
+                    (neigh) => mol.atoms.indexOf(neigh) === anchorId ? polarVec(initAngle, distanceOut) : neigh.pos.clone().subtract(centerPos)
+                );
+                return offsetvectors;
 
-        });
-    }
-
-    rotateOne(atomId, anchorId, initAngle) {
-        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, centerPos, anchorPos) => {
-
-            const distanceOut = anchorPos.clone().subtract(centerPos).length();
-
-            const offsetvectors = neighbors.map(
-                (neigh) => this.atoms.indexOf(neigh) === anchorId ? polarVec(initAngle, distanceOut) : neigh.pos.clone().subtract(centerPos)
-            );
-            return offsetvectors;
-
-        });
-    }
-
-    sameDistance(atomId, anchorId, initAngle) {
-        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors, centerPos, anchorPos) => {
-
-            const distanceOut = anchorPos.clone().subtract(centerPos).length();
-
-            const offsetVectors = neighbors.map(
-                (neigh) => polarVec(neigh.pos.clone().subtract(centerPos).angle(), distanceOut)
-            );
-            return offsetVectors;
-        });
-    }
-
-    equalSpacing(atomId, anchorId, initAngle) {
-        this.organizeNeighbors(atomId, anchorId, initAngle, (neighbors) => {
-            
-            const avgDistanceOut = neighbors.reduce(
-                (pn, neigh) => pn + neigh.pos.distance(centerPos),
-                0
-            ) / neighbors.length;
-
-            const betweenAngle = 2 * Math.PI / neighbors.length;
-
-            const orientAngles = [];
-            for (let i = 0; i < neighbors.length; i++) {
-                orientAngles.push(initAngle + i*betweenAngle);
             }
+        },
+        'rotate all': {
+            needsAngle: true,
+            function: (neighbors, initAngle, centerPos, anchorPos) => {
 
-            const offsetVectors = orientAngles.map(
-                (angle) => polarVec(angle, avgDistanceOut)
-            );
-            return offsetVectors;
+                const anchorangle = anchorPos.clone().subtract(centerPos).angle();
 
-        });
-    }
+                const offsetVectors = neighbors.map((neigh) => {
+                    const diffvec = neigh.pos.clone().subtract(centerPos);
+                    const ang = diffvec.angle() + initAngle - anchorangle;
+
+                    return polarVec(ang, diffvec.length());
+                });
+                return offsetVectors;
+
+            }
+        },
+        'same distance': {
+            needsAngle: false,
+            function: (neighbors, initAngle, centerPos, anchorPos) => {
+
+                const distanceOut = anchorPos.clone().subtract(centerPos).length();
+
+                const offsetVectors = neighbors.map(
+                    (neigh) => polarVec(neigh.pos.clone().subtract(centerPos).angle(), distanceOut)
+                );
+                return offsetVectors;
+
+            }
+        },
+        'equally angled': {
+            needsAngle: true,
+            function: (neighbors, initAngle, centerPos) => {
+
+                const betweenAngle = 2 * Math.PI / neighbors.length;
+
+                const orientAngles = [];
+                for (let i = 0; i < neighbors.length; i++) {
+                    orientAngles.push(initAngle + i*betweenAngle);
+                }
+
+                const offsetVectors = orientAngles.map(
+                    (angle, i) => polarVec(angle, neighbors[i].pos.clone().subtract(centerPos).length())
+                );
+                return offsetVectors;
+
+            }
+        },
+        't intersection': {
+            needsAngle: true,
+            function: (neighbors, initAngle, centerPos) => {
+
+                if (neighbors.length !== 3) {
+                    alert("T Intersection only works with 3 atoms around the center!");
+                    return [];
+                }
+
+                const orientAngles = [-Math.PI / 2, 0, Math.PI / 2];
+
+
+                orientAngles.forEach(angle => angle -= Math.sign(anchorside) * Math.PI / 2);
+
+                const offsetVectors = orientAngles.map(
+                    (angle, i) => polarVec(angle + initAngle, neighbors[i].pos.clone().subtract(centerPos).length())
+                );
+                return offsetVectors;
+
+            }
+        },
+    };
 
     translateWhole(delta) {
         for (const atom of this.atoms) atom.pos.add(delta);
