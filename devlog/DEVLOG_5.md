@@ -1,6 +1,8 @@
 ## Devlog #5 - 11/5/2025
 # Branching Out
 
+#### Molecules are like trees, right?
+
 I realized that the "organize atoms around a central one, equally spaced polarly" is a really niche action that probably isn't enough. So I generalized it, and now there are plenty of options.
 
 I pulled out the code that generates offset vectors for equal polar spacing and made it a parameter, which can now be any function.

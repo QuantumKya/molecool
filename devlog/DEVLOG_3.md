@@ -1,6 +1,8 @@
 ## Devlog #3 - 11/5/2025
 # Molecule Pantry
 
+#### Make a nice hydrogen chaval!
+
 For testing, I made a catalogue (of only 3 items lol) of molecules that you can load into the scene. They are:
 - Water
 - Methane

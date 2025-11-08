@@ -1,9 +1,11 @@
 class Atom {
-    constructor(element, position = new Victor(0, 0), rad = 100) {
+    constructor(element, position = new Victor(0, 0)) {
         this.elemData = element;
         this.valence = element.valence;
         this.pos = position;
-        this.radius = rad;
+
+        const idof = Object.values(atoms).indexOf(element);
+        this.radius = 45 + 10 * Number(idof > 0) + 2.5 * idof;
     }
 
     draw(ctx) {

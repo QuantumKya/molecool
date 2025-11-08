@@ -44,6 +44,7 @@
                             <span class="dropdown-item">Methane</span>
                             <span class="dropdown-item">Ethene</span>
                             <span class="dropdown-item">Ammonia</span>
+                            <span class="dropdown-item">Ozone</span>
                         </div>
                         <p class="dropdown-display">Selected: none</p>
                     </div>
@@ -95,8 +96,14 @@
 
     </div>
 
+    <div class="dropdown" id="atomoptions" style="position: absolute; z-index: 10; top: 0px; left: 0px;">
+        <button class="dropdownbtn" onclick="dropdown('atomoptions')" style="display: none;">Atom Options</button>
+        <div class="dropdown-box" id="atom-dropdown-box">
+        </div>
+    </div>
+
     <div style="position: absolute; right: 5px; bottom: 0px;">
-        <a href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOG_1.md">
+        <a href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md">
             <p>Check out the project's devlogs here!!!</p>
         </a>
     </div>
@@ -105,6 +112,7 @@
         adddropdown('organizeoptions', true, true);
         adddropdown('templatemolecules', true, true);
         adddropdown('edittools', true, true, 'move');
+        addAtomDropdown();
     </script>
 
 </body>

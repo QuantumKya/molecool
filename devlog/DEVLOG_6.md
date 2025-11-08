@@ -1,6 +1,8 @@
 ## Devlog #6 - 11/6/2025
 # Logical Chemistry
 
+#### Conspiracy theorists hate it!
+
 Things in this project are probably going to get complicated, so I've worked to make things as simple as possible right now. Remember last time when I took the offset calculations out of the big function and made them their own ones? Well, I've changed that again. Now, there's a dictionary.
 
 ```js

@@ -22,12 +22,12 @@ function getCanvasImage() {
 
 
 function ethene() {
-    const C1 = new Atom(atoms.carbon, new Victor(200, 300), 65);
-    const C2 = new Atom(atoms.carbon, new Victor(500, 300), 65);
-    const H11 = new Atom(atoms.hydrogen, new Victor(200, 150), 45);
-    const H12 = new Atom(atoms.hydrogen, new Victor(200, 450), 45);
-    const H21 = new Atom(atoms.hydrogen, new Victor(500, 150), 45);
-    const H22 = new Atom(atoms.hydrogen, new Victor(500, 450), 45);
+    const C1 = new Atom(atoms.carbon, new Victor(200, 300));
+    const C2 = new Atom(atoms.carbon, new Victor(500, 300));
+    const H11 = new Atom(atoms.hydrogen, new Victor(200, 150));
+    const H12 = new Atom(atoms.hydrogen, new Victor(200, 450));
+    const H21 = new Atom(atoms.hydrogen, new Victor(500, 150));
+    const H22 = new Atom(atoms.hydrogen, new Victor(500, 450));
     
     const methane = new Molecule(C1, C2, H11, H12, H21, H22);
     methane.createCovalentBond(0, 1, 2);
@@ -45,8 +45,8 @@ function methane() {
         offsetvectors.push(polarVec(angleoff, 200));
     }
 
-    const C = new Atom(atoms.carbon, canvascenter.clone(), 60);
-    const Hs = offsetvectors.map(vec => new Atom(atoms.hydrogen, canvascenter.clone().add(vec), 45));
+    const C = new Atom(atoms.carbon, canvascenter.clone());
+    const Hs = offsetvectors.map(vec => new Atom(atoms.hydrogen, canvascenter.clone().add(vec)));
     
     const methane = new Molecule(C, ...Hs);
     for (let i = 0; i < 4; i++) methane.createCovalentBond(0, i+1);
@@ -60,9 +60,9 @@ function h2o() {
         return polarVec(angleoff, 200);
     });
     
-    const O = new Atom(atoms.oxygen, canvascenter, 70);
-    const H1 = new Atom(atoms.hydrogen, canvascenter.clone().add(offsetvectors[0]), 45);
-    const H2 = new Atom(atoms.hydrogen, canvascenter.clone().add(offsetvectors[1]), 45);
+    const O = new Atom(atoms.oxygen, canvascenter);
+    const H1 = new Atom(atoms.hydrogen, canvascenter.clone().add(offsetvectors[0]));
+    const H2 = new Atom(atoms.hydrogen, canvascenter.clone().add(offsetvectors[1]));
 
     const h2o = new Molecule(O, H1, H2);
     h2o.createCovalentBond(0, 1);
@@ -77,12 +77,29 @@ function ammonia() {
         offsetvectors.push(polarVec(angleoff, 200));
     }
 
-    const N = new Atom(atoms.nitrogen, canvascenter.clone(), 65);
-    const Hs = offsetvectors.map(vec => new Atom(atoms.hydrogen, canvascenter.clone().add(vec), 45));
+    const N = new Atom(atoms.nitrogen, canvascenter.clone());
+    const Hs = offsetvectors.map(vec => new Atom(atoms.hydrogen, canvascenter.clone().add(vec)));
 
     const ammonia = new Molecule(N, ...Hs);
     for (let i = 0; i < 3; i++) ammonia.createCovalentBond(0, i+1);
     return ammonia;
+}
+
+function ozone() {
+    const anglebetween = 116.78;
+    const offsetvectors = [-1, 1].map((sign) => {
+        const angleoff = -Math.PI / 2 + sign * anglebetween / 2;
+        return polarVec(angleoff, 200);
+    });
+    
+    const O = new Atom(atoms.oxygen, canvascenter, 70);
+    const O1 = new Atom(atoms.oxygen, canvascenter.clone().add(offsetvectors[0]), 70);
+    const O2 = new Atom(atoms.oxygen, canvascenter.clone().add(offsetvectors[1]), 70);
+
+    const oz = new Molecule(O, O1, O2);
+    oz.createCovalentBond(0, 1);
+    oz.createCovalentBond(0, 2);
+    return oz;
 }
 
 let mol = h2o();
@@ -153,7 +170,16 @@ function init() {
                     canvas.style.cursor = 'grabbing';
                     break;
                 case 'add atom':
-                    mol.atoms.push(new Atom(atoms.hydrogen, getMousePos(), 45));
+                    const mp = getMousePos();
+                    atomDropdown(() => {
+                        const selectedAtom = dropdowns['atomoptions'];
+                        if (selectedAtom !== 'none') {
+                            mol.atoms.push(new Atom(atoms[selectedAtom], getMousePos()));
+                            [...document.querySelector('#atom-dropdown-box').children].forEach(
+                                (option) => option.classList.toggle('dropdown-item-selected', false)
+                            );
+                        }
+                    });
                     break;
                 case 'delete atom':
                     if (hovereeId === undefined) {
@@ -384,6 +410,10 @@ document.addEventListener('keydown', (e) => {
         if (bonding) {
             bonding = false;
             clearDraw('bondtext');
+        }
+
+        if (dropdowns['edittools'] === 'add atom') {
+            atomDropdown(()=>{});
         }
 
     }

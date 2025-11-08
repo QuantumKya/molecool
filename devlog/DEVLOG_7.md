@@ -1,6 +1,8 @@
 ## Devlog #7 - 11/7/2025
 # Doing Chemistry???
 
+#### Well, not quite...
+
 Maybe... people should be able to add atoms to make their own molecules! So I added the following tools:
 - Moving atoms
 - Adding atoms
@@ -20,4 +22,4 @@ Happy editing, and see you next time!
 
 This has been a fun DEVLOG 6-7 AAAAAAAHHHHHH !!!!!!
 
-[<-- Previous Devlog](DEVLOG_6.md)<!--   [Next Devlog --\>](DEVLOG_8.md)-->
+[<-- Previous Devlog](DEVLOG_6.md)   [Next Devlog -->](DEVLOG_8.md)

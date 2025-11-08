@@ -41,11 +41,18 @@ const atoms = {
     },
     phosphorus: {
         symbol: 'P',
-        valence: 3
+        valence: 3,
+        color: '#ffff6aff',
+    },
+    sulfur: {
+        symbol: 'S',
+        valence: 2,
+        color: '#ecd800ff',
     },
     chlorine: {
         symbol: 'Cl',
         valence: 1,
+        color: '#00e980ff',
     },
     potassium: {
         symbol: 'K',

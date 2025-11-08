@@ -1,6 +1,8 @@
 ## Devlog #4 - 11/5/2025
 # Dropping and Downing
 
+#### Just wait until I invent picking and upping...
+
 I realized that, with all of the tools and options I'd be making, I need a system for selecting from a list. So I made a dropdown and selection system.
 Here's how it looks!
 

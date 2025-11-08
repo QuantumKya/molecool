@@ -78,6 +78,8 @@ class Molecule {
             return;
         }
         this.bonds.push({ atom1: atomId1, atom2: atomId2, degree });
+        this.atoms[atomId1].valence -= degree;
+        this.atoms[atomId2].valence -= degree;
     }
 
     destroyCovalentBond(atomId1, atomId2, degree = 1) {
@@ -132,7 +134,6 @@ class Molecule {
             allConnected.push(...unfound);
 
             sampleAtoms = unfound.map((aid) => this.findNeighborIndices(aid)).flat();
-            console.log(sampleAtoms);
             predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.includes(aid), false);
         }
 

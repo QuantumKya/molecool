@@ -1,6 +1,8 @@
 ## Devlog #2 - 11/2-3/2025
 # Playing God
 
+#### Just a bit dramatic...
+
 The next important step to making a molecule editor is to allow moving the molecules!!! So I did that. Now you can grab the molecule and drag it around. 
 
 Holding shift allows you to move an atom individually. Don't worry, it'll stay bonded to the rest! It may look weird though...
