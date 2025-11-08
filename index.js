@@ -21,7 +21,7 @@ function getCanvasImage() {
 }
 
 
-function makeEthene() {
+function ethene() {
     const C1 = new Atom(atoms.carbon, new Victor(200, 300), 65);
     const C2 = new Atom(atoms.carbon, new Victor(500, 300), 65);
     const H11 = new Atom(atoms.hydrogen, new Victor(200, 150), 45);
@@ -38,7 +38,7 @@ function makeEthene() {
     return methane;
 }
 
-function makeMethane() {
+function methane() {
     const offsetvectors = [];
     for (let i = 0; i < 4; i++) {
         const angleoff = Math.PI / 2 + (i / 4) * Math.PI * 2;
@@ -53,7 +53,7 @@ function makeMethane() {
     return methane;
 }
 
-function makeWater() {
+function h2o() {
     const anglebetween = 104.45;
     const offsetvectors = [-1, 1].map((sign) => {
         const angleoff = -Math.PI / 2 + sign * anglebetween / 2;
@@ -70,7 +70,7 @@ function makeWater() {
     return h2o;
 }
 
-function makeAmmonia() {
+function ammonia() {
     const offsetvectors = [];
     for (let i = 0; i < 3; i++) {
         const angleoff = Math.PI / 2 + (i / 3) * Math.PI * 2;
@@ -85,17 +85,12 @@ function makeAmmonia() {
     return ammonia;
 }
 
-const ethene = makeEthene();
-const methane = makeMethane();
-const h2o = makeWater();
-const ammonia = makeAmmonia();
-
-let mol = h2o;
+let mol = h2o();
 
 function loadTemplateMolecule() {
     const newmolecule = dropdowns['templatemolecules'];
     if (!newmolecule) return;
-    eval(`mol = ${newmolecule};`);
+    eval(`mol = ${newmolecule}();`);
 }
 
 
@@ -347,10 +342,7 @@ function init() {
     
         if (e.button === 0) {
     
-            if (hovereeId === undefined) {
-                
-            }
-            else {
+            if (dropdowns['edittools'] === 'move') {
                 draggingAtom = -1;
                 canvas.style.cursor = 'default';
             }
@@ -369,7 +361,7 @@ function init() {
         if (hovereeId === undefined) {
             canvas.style.cursor = 'default';
         }
-        else {
+        else if (dropdowns['edittools'] === 'move') {
             canvas.style.cursor = 'grab';
         }
     });
@@ -422,10 +414,10 @@ function main() {
             mol.translateOne(draggingAtom, diff);
         }
         else if (CTRLING) {
-            mol.translateAllConnected(draggingAtom, diff);
+            mol.translateWhole(diff);
         }
         else {
-            mol.translateWhole(diff);
+            mol.translateAllConnected(draggingAtom, diff);
         }
         lastMousePos = getMousePos();
     }
@@ -447,7 +439,7 @@ function main() {
 
     // DEBUG ZONE -----------------------------------------------
 
-    console.log(SHIFTING);
+    
 }
 
 function run() {

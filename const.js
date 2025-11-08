@@ -148,7 +148,7 @@ function findDistance(l1, l2, p) {
     const parallelogramArea = Math.abs(l2.clone().subtract(l1).cross(p.clone().subtract(l1)));
     const base = l2.clone().subtract(l1).length();
     return parallelogramArea / base;
-};
+}
 
 function polarVec(angle, radius) {
     return new Victor(Math.cos(angle), Math.sin(angle)).multiplyScalar(radius);

@@ -105,7 +105,7 @@ class Molecule {
         }
     }
 
-    findNeighbors(atomId) {
+    findNeighborIndices(atomId) {
         const neighborBonds = this.bonds.filter(
             (bond) => bond.atom1 === atomId || bond.atom2 === atomId
         ).map(
@@ -113,9 +113,31 @@ class Molecule {
         );
 
         const neighbors = neighborBonds.map(
-            (bond) => this.atoms[bond.atom2]
+            (bond) => bond.atom2
         );
         return neighbors;
+    }
+
+    findNeighbors(atomId) {
+        return this.findNeighborIndices(atomId).map((id) => this.atoms[id]);
+    }
+
+    findAllConnected(atomId) {
+        const allConnected = [atomId];
+        
+        let sampleAtoms = this.findNeighborIndices(atomId);
+        let predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.includes(aid), false);
+        while (predicate) {
+            const unfound = sampleAtoms.filter(aid => !allConnected.includes(aid));
+            allConnected.push(...unfound);
+
+            sampleAtoms = unfound.map((aid) => this.findNeighborIndices(aid)).flat();
+            console.log(sampleAtoms);
+            predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.includes(aid), false);
+        }
+
+        console.log(allConnected);
+        return allConnected;
     }
 
     organizeNeighbors(atomId, anchorId, initAngle, transformation, ...args) {
@@ -263,19 +285,12 @@ class Molecule {
     translateWhole(delta) {
         for (const atom of this.atoms) atom.pos.add(delta);
     }
-    /*
 
     translateAllConnected(id, delta) {
-        const connectedAtoms = [];
-        for (let i = 0; i < this.atoms.length; i++) {
-            const neigh = this.findNeighbors(i);
-            const atomid = neigh.indexOf(id);
-            if (atomid !== -1) connectedAtoms.push(i);
-        }
+        const connectedAtoms = this.findAllConnected(id);
         for (const id of connectedAtoms) this.atoms[id].pos.add(delta);
     }
     
-    */
     translateOne(id, delta) {
         this.atoms[id].pos.add(delta);
     }
