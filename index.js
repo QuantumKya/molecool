@@ -85,23 +85,6 @@ function ammonia() {
     return ammonia;
 }
 
-function ozone() {
-    const anglebetween = 116.78;
-    const offsetvectors = [-1, 1].map((sign) => {
-        const angleoff = -Math.PI / 2 + sign * anglebetween / 2;
-        return polarVec(angleoff, 200);
-    });
-    
-    const O = new Atom(atoms.oxygen, canvascenter, 70);
-    const O1 = new Atom(atoms.oxygen, canvascenter.clone().add(offsetvectors[0]), 70);
-    const O2 = new Atom(atoms.oxygen, canvascenter.clone().add(offsetvectors[1]), 70);
-
-    const oz = new Molecule(O, O1, O2);
-    oz.createCovalentBond(0, 1);
-    oz.createCovalentBond(0, 2);
-    return oz;
-}
-
 let mol = h2o();
 
 function loadTemplateMolecule() {

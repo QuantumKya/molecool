@@ -168,3 +168,7 @@ function roundToInterval(value, interval) {
 function clampToAngleSpace(angle) {
     return (angle + Math.PI) % (Math.PI * 2) - Math.PI;
 }
+
+function toTitle(str) {
+    return str.split(' ').map(str => str.charAt(0).toUpperCase() + str.slice(1)).join(' ');
+}

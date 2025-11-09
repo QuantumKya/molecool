@@ -9,5 +9,6 @@
 [Devlog 7 - Doing Chemistry???](./DEVLOG_7.md)
 [Devlog 8 - Chain Reaction](./DEVLOG_8.md)
 [Devlog 9 - The Axiom of Choice](./DEVLOG_9.md)
+[Devlog 10 - Manual Catalysis](./DEVLOG_10.md)
 
 Happy Reading!

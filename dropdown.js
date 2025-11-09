@@ -34,6 +34,9 @@ function dropdown(nodeid) {
     const dropdowndiv = document.getElementById(nodeid);
     const dropdowncontent = dropdowndiv.querySelector('.dropdown-box');
     dropdowncontent.classList.toggle('dropdown-show');
+    
+    if (nodeid === 'edittools') updateLeftManual();
+    if (nodeid === 'organizeoptions') updateRightManual();
 }
 
 function addAtomDropdown() {

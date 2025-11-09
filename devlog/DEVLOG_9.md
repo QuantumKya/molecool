@@ -19,9 +19,6 @@ if (degree > this.atoms[atomId1].valence || degree > this.atoms[atomId2].valence
     alert("One or more of those molecules are already full.");
     return;
 }
-this.bonds.push({ atom1: atomId1, atom2: atomId2, degree });
-this.atoms[atomId1].valence -= degree;
-this.atoms[atomId2].valence -= degree;
 ```
 
 <br>
