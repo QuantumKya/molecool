@@ -77,7 +77,17 @@ class Molecule {
             alert("One or more of those molecules are already full.");
             return;
         }
-        this.bonds.push({ atom1: atomId1, atom2: atomId2, degree });
+        const match = this.bonds.find((bond) => (bond.atom1 === atomId1 && bond.atom2 === atomId2) || (bond.atom2 === atomId1 && bond.atom1 === atomId2));
+        if (match) {
+            if (match.degree + degree > 3) {
+                alert("That's too much bonding!");
+                return;
+            }
+            match.degree += degree;
+        }
+        else {
+            this.bonds.push({ atom1: atomId1, atom2: atomId2, degree });
+        }
         this.atoms[atomId1].valence -= degree;
         this.atoms[atomId2].valence -= degree;
     }
