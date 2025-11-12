@@ -36,5 +36,9 @@ Here are all of the devlogs I've written for this project as I've made it. I hop
 11/9/2025
 
 [Devlog 12 - *Shortcuts* to Perfection](./DEVLOG_12.md)
+11/9/2025
+
+[Devlog 13 - Enzymes Make Mistakes, Too](./DEVLOG_13.md)
+11/11/2025
 
 Happy Reading!

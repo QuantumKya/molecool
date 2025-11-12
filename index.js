@@ -99,7 +99,6 @@ function loadTemplateMolecule() {
 function cloneMolecule(molecule) {
     const mAtoms = molecule.atoms.map((a) => {
         const newA = new Atom(a.elemData, a.pos);
-        newA.valence = a.valence;
         return newA;
     });
 
@@ -117,20 +116,20 @@ function updateState() {
 }
 
 function undo() {
-    if (stateBack + 1 > stateBuffer.length) return;
+    if (stateBack + 1 >= stateBuffer.length) return;
     stateBack++;
     updateState();
 }
 
 function redo() {
-    if (stateBack < 1) return;
+    if (stateBack <= 0) return;
     stateBack--;
     updateState();
 }
 
 function saveChange() {
     if (stateBack > 0) {
-        stateBuffer.splice(stateBuffer.length - (stateBack+1));
+        stateBuffer.splice(-(stateBack+1));
         stateBack = 0;
     }
     stateBuffer.push(cloneMolecule(mol));
@@ -183,29 +182,35 @@ canvas.addEventListener('mousedown', (e) => {
             if (dropdowns['organizeoptions'] === 't intersection') {
                 bendIndex += 1;
                 if (bendIndex >= 2) bendIndex = -1;
+                break;
             }
 
-            if (organizeStage !== 'null') return;
+            if (organizeStage !== 'null') break;
 
             if (e.shiftKey) {
                 boxCorner = getMousePos();
                 if (!selectingAtoms) selectingAtoms = true;
+                break;
             }
-
+            
+            
             if (hovereeId === undefined) {
                 console.log("Nothin!");
                 break;
             }
+            else {
+                draggingAtom = hovereeId;
+                lastMousePos = getMousePos();
+                canvas.style.cursor = 'grabbing';
+                break;
+            }
             
-            draggingAtom = hovereeId;
-            lastMousePos = getMousePos();
-            canvas.style.cursor = 'grabbing';
             break;
         case 2:
             if (bonding) {
                 bondingDegree++;
                 if (bondingDegree > 3 || bondingDegree <= 0) bondingDegree = 1;
-                return;
+                break;
             }
 
             const orgoption = dropdowns['organizeoptions'];
@@ -323,7 +328,10 @@ canvas.addEventListener('mouseup', (e) => {
             if (selectingAtoms) selectingAtoms = false;
             mol.findInBox(boxCorner, getMousePos());
         }
-        draggingAtom = -1;
+        else if (draggingAtom !== -1) {
+            draggingAtom = -1;
+            saveChange();
+        }
         canvas.style.cursor = 'default';
     }
 });
@@ -336,11 +344,24 @@ canvas.addEventListener('mousemove', (e) => {
 
     const hovereeId = mol.findHoveredAtom();
 
-    if (hovereeId === undefined) {
-        canvas.style.cursor = 'default';
+    if (draggingAtom !== -1) {
+        canvas.style.cursor = 'grabbing';
+        const diff = getMousePos().subtract(lastMousePos);
+        
+        if (e.ctrlKey) {
+            mol.translateOne(draggingAtom, diff);
+        }
+        else {
+            mol.translateAllConnected(draggingAtom, diff);
+        }
+        lastMousePos = getMousePos();
+        return;
+    }
+    else if (hovereeId) {
+        canvas.style.cursor = 'grab';
     }
     else {
-        canvas.style.cursor = 'grab';
+        canvas.style.cursor = 'default';
     }
 });
 
@@ -512,18 +533,6 @@ function main() {
     // Update ---------------------------------------------------
 
     mol.update();
-
-    if (draggingAtom !== -1) {
-        const diff = getMousePos().subtract(lastMousePos);
-
-        if (CTRLING) {
-            mol.translateOne(draggingAtom, diff);
-        }
-        else {
-            mol.translateAllConnected(draggingAtom, diff);
-        }
-        lastMousePos = getMousePos();
-    }
 
     updateFormula();
 

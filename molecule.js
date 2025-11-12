@@ -407,6 +407,11 @@ class Molecule {
             return str;
         });
 
-        return sectionStrs.join(' + ');
+        const seenObj = {};
+        for (const section of sectionStrs) {
+            if (Object.keys(seenObj).includes(section)) seenObj[section]++;
+            else seenObj[section] = 1;
+        }
+        return Object.entries(seenObj).map((ent) => (ent[1] > 1 ? `${ent[1]} ` : '') + ent[0]).join(' + ');
     }
 }
