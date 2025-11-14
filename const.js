@@ -5,6 +5,10 @@ const FPS = 30;
 function getCurrentFrame() { return CURRENTFRAME; }
 
 
+const CANVASWIDTH = 850;
+const CANVASHEIGHT = 850;
+const CANVASSIZE = new Victor(CANVASWIDTH, CANVASHEIGHT);
+
 let currentMousePos = new Victor(0, 0);
 
 function getMousePos() { return currentMousePos.clone(); }

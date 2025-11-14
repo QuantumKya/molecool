@@ -1,8 +1,8 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 600;
-canvas.height = 600;
+canvas.width = CANVASWIDTH;
+canvas.height = CANVASHEIGHT;
 
 const ccenter = new Victor(canvas.width / 2, canvas.height / 2);
 
@@ -337,10 +337,13 @@ canvas.addEventListener('mouseup', (e) => {
 });
 
 canvas.addEventListener('mousemove', (e) => {
+    if (addingAtom) return;
+
     const rect = canvas.getBoundingClientRect();
     const mx = e.pageX - rect.left;
     const my = e.pageY - rect.top;
-    currentMousePos = new Victor(mx, my);
+    const mv = new Victor(mx, my);
+    currentMousePos = mv.clone().multiply(CANVASSIZE).divide(new Victor(rect.width, rect.height));
 
     const hovereeId = mol.findHoveredAtom();
 
@@ -385,12 +388,12 @@ document.addEventListener('keydown', (e) => {
         }
 
         if (addingAtom) {
-            atomDropdown(()=>{});
+            cancelAtomDropdown();
             addingAtom = false;
         }
 
         mol.selectedAtoms.length = 0;
-
+        return;
     }
 
     if (organizeStage !== 'null') {
@@ -414,58 +417,62 @@ document.addEventListener('keydown', (e) => {
 
     if (e.code === 'KeyA') {
         if (e.shiftKey) {
-            if (confirm('Delete selected atom(s)?')) {
-                if (mol.selectedAtoms.length > 0) {
-                    let i = 0;
-                    let lastId = NaN;
-                    for (const aid of mol.selectedAtoms) {
-                        if (lastId < aid) i++;
-                        mol.destroyAtom(aid - i);
-                        lastId = aid;
-                    }
-                    mol.selectedAtoms.length = 0;
-                    saveChange();
+            if (!confirm('Delete selected atom(s)?')) return;
+
+            if (mol.selectedAtoms.length > 0) {
+                let i = 0;
+                let lastId = NaN;
+                for (const aid of mol.selectedAtoms) {
+                    if (lastId < aid) i++;
+                    mol.destroyAtom(aid - i);
+                    lastId = aid;
                 }
-                else {
-                    if (hovereeId === undefined) {
-                        console.log("Nothin!");
-                        return;
-                    }
-                    else {
-                        mol.destroyAtom(hovereeId);
-                        saveChange();
-                    }
-                }
+                mol.selectedAtoms.length = 0;
+                saveChange();
+                return;
             }
+
+            if (hovereeId === undefined) return;
+
+            mol.destroyAtom(hovereeId);
+            saveChange();
+            return;
         }
         else {
-            const mp = getMousePos();
+            if (addingAtom) return;
+
             addingAtom = true;
-            atomDropdown(() => {
-                addingAtom = false;
-                const selectedAtom = dropdowns['atomoptions'];
-                if (selectedAtom !== 'none') {
-                    mol.atoms.push(new Atom(ATOMS[selectedAtom], getMousePos()));
-                    [...document.querySelector('#atom-dropdown-box').children].forEach(
-                        (option) => option.classList.toggle('dropdown-item-selected', false)
-                    );
-                    saveChange();
-                }
-            });
+            atomDropdown(addingAtom, mol);
         }
     }
     else if (e.code === 'KeyB') {
         if (e.shiftKey) {
             const bondHoveree = mol.findHoveredBond();
 
+            if (mol.selectedAtoms.length > 0) {
+
+                if (!confirm('Delete all bonds connecting selected atoms?')) return;
+
+                let didsomething = false;
+                for (const bond of [...mol.bonds]) {
+                    if (mol.selectedAtoms.includes(bond.atom1) && mol.selectedAtoms.includes(bond.atom2)) {
+                        mol.destroyCovalentBond(bond.atom1, bond.atom2, bond.degree);
+                        didsomething = true;
+                    }
+                }
+                if (didsomething) saveChange();
+                return;
+            }
+            
             if (bondHoveree === undefined) return;
             
-            if (confirm('Delete selected bond?')) {
-                const a1 = mol.bonds[bondHoveree].atom1;
-                const a2 = mol.bonds[bondHoveree].atom2;
-                mol.destroyCovalentBond(a1, a2);
-                saveChange();
-            }
+            if (!confirm('Delete selected bond?')) return;
+
+            const a1 = mol.bonds[bondHoveree].atom1;
+            const a2 = mol.bonds[bondHoveree].atom2;
+            mol.destroyCovalentBond(a1, a2);
+            saveChange();
+            return;
         }
         else {
             if (hovereeId === undefined) {

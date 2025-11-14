@@ -51,27 +51,47 @@ function addAtomDropdown() {
     adddropdown('atomoptions', true, false);
 }
 
-function atomDropdown(func) {
+
+const atomDropdownHandler = (e) => {
+    addingAtom = false;
+    const selectedAtom = dropdowns['atomoptions'];
+    if (selectedAtom !== 'none') {
+        mol.atoms.push(new Atom(ATOMS[selectedAtom], getMousePos()));
+        [...document.querySelector('#atom-dropdown-box').children].forEach(
+            (option) => option.classList.toggle('dropdown-item-selected', false)
+        );
+        saveChange();
+    }
+
+    const atomdropdown = document.getElementById('atomoptions');
+    atomdropdown.querySelector('.dropdown-box').childNodes.forEach((child) => {
+        child.removeEventListener('mousedown', atomDropdownHandler);
+    });
+}
+
+function atomDropdown() {
     const atomdropdown = document.getElementById('atomoptions');
     const canvas = document.querySelector('canvas').getBoundingClientRect();
-
-    const mp = getMousePos();
+    
+    const mp = getMousePos().clone().divide(CANVASSIZE).multiply(new Victor(canvas.width, canvas.height));
     const x = mp.x + canvas.left;
     const y = mp.y + canvas.top;
-
+    
     atomdropdown.style.left = `${x}px`;
     atomdropdown.style.top = `${y}px`;
     
     atomdropdown.querySelector('button').click();
 
-    const f = () => {
-        func();
-        atomdropdown.querySelector('.dropdown-box').childNodes.forEach((child) => {
-            child.removeEventListener('mousedown', f);
-        });
-    }
 
     atomdropdown.querySelector('.dropdown-box').childNodes.forEach((child) => {
-        child.addEventListener('mousedown', f);
+        child.addEventListener('mousedown', atomDropdownHandler, { once: true });
+    });
+}
+
+function cancelAtomDropdown() {
+    const atomdropdown = document.getElementById('atomoptions');
+    atomdropdown.querySelector('button').click();
+    atomdropdown.querySelector('.dropdown-box').childNodes.forEach((child) => {
+        child.removeEventListener('mousedown', atomDropdownHandler);
     });
 }

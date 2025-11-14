@@ -12,7 +12,7 @@
     user-select: none;
 
     width: max-content;
-    max-width: 150px;
+    max-width: calc(100% - 20px);
 
     transition-duration: 200ms;
 }
@@ -24,4 +24,58 @@
 .formula-copied {
     background-color: #fff42b;
     color: #333;
+}
+
+#container {
+    display: flex;
+    flex-direction: row;
+    width: 95vw;
+    height: 95vh;
+}
+
+#container > div {
+    flex-grow: 1;
+}
+
+#kansas {
+    align-self: flex-start;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+
+.hborder {
+    border: lightgray solid 1px;
+    height: 0px;
+    margin: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.vborder {
+    border: lightgray solid 1px;
+    width: 0px;
+}
+
+.row-box {
+    display: flex;
+    flex-direction: row;
+    
+    height: min-content;
+    padding: 10px;
+    gap: 10px;
+}
+
+.column-box {
+    display: flex;
+    flex-direction: column;
+    
+    gap: 15px;
+    padding: 10px;
+}
+
+.manual {
+    height: min-content;
+    padding: 10px;
 }

@@ -47,14 +47,14 @@
 </head>
 <body>
     
-    <div style="display: flex; flex-direction: row;">
+    <div id="container">
 
-        <canvas id="kansas" style="align-self: flex-start;"></canvas>
+        <canvas id="kansas"></canvas>
 
-        <div style="padding-left: 10px; max-width: 60vw;">
+        <div style="padding-left: 10px;">
             <!-- Template and Download Image -->
-            <div style="height: min-content; display: flex; flex-direction: row;">
-                <div style="display: flex; flex-direction: column; gap: 15px; padding: 10px;">
+            <div class="row-box">
+                <div class="column-box">
                     <div class="dropdown" id="templatemolecules">
                         <button class="dropdownbtn" onclick="dropdown('templatemolecules')">Template Molecules</button>
                         <div class="dropdown-box">
@@ -69,20 +69,51 @@
                     <button onclick="loadTemplateMolecule()" style="width: min-content;">Load</button>
                 </div>
     
-                <div style="border: lightgray solid 1px; width: 0px;"></div>
+                <div class="vborder"></div>
+
+                <div style="display: flex; flex-direction: column; width: 130px;">
+                    <label for="chemical-formula" style="width: 100%;">Chemical Formula</label>
+                    <p id="chemical-formula"></p>
+                    <p style="margin-top: -25px; font-size: small;">click to copy</p>
+                </div>
+
+                <div class="vborder"></div>
     
-                <div style="display: flex; flex-direction: column; gap: 0px; padding: 10px;">
-                    <button onclick="getCanvasImage()">Download Canvas As Image</button>
+                <div class="column-box">
+                    <button onclick="getCanvasImage()" style="margin-bottom: -0.6cm;">Download Canvas As Image</button>
                     <p>(for bug reporting or showcase)</p>
                 </div>
             </div>
 
-            <div style="border: lightgray solid 1px; height: 0px; margin: 10px; margin-left: 0px; margin-right: 0px;"></div>
+            <div class="hborder"></div>
 
-            <!-- Dropdowns -->
-            <div style="height: min-content; display: flex; flex-direction: row; padding: 10px; gap: 10px;">
+            <div class="hborder"></div>
 
-                <div class="dropdown" id="organizeoptions">
+            <div class="row-box">
+
+                <div id="editmanual" class="manual">
+                    <h2>Editing Shortcuts</h2>
+                    <p><b>Left Click &amp; Drag</b> — move molecule</p>
+                    <p><b>Shift + Left Click &amp; Drag</b> — move individual Atom</p>
+                    <p><b>Right Click</b> — perform organize action</p>
+
+                    <br>
+                    
+                    <p><b>A</b> — create atom</p>
+                    <p><b>Shift + A</b> — delete atom(s)</p>
+                    <p><b>B</b> — create bond</p>
+                    <p><b>Shift + B</b> — delete bond</p>
+                </div>
+
+                <div class="vborder"></div>
+
+            </div>
+
+            <div class="hborder"></div>
+
+            <div class="row-box">
+
+                <div class="dropdown" id="organizeoptions" style="padding: 10px; min-width: 150px;">
                     <button class="dropdownbtn" onclick="dropdown('organizeoptions')">Organize Option</button>
                     <div class="dropdown-box">
                         <span class="dropdown-item">Rotate One</span>
@@ -93,35 +124,16 @@
                     </div>
                     <p class="dropdown-display">Selected: none</p>
                 </div>
-
-            </div>
-
-            <div style="border: lightgray solid 1px; height: 0px; margin: 10px; margin-left: 0px; margin-right: 0px;"></div>
-
-            <div style="height: min-content; display: flex; flex-direction: row; padding: 10px; gap: 10px;">
-
-                <div id="editmanual" class="manual" style="height: min-content; padding: 10px;">
-                    <h2>Editing Shortcuts</h2>
-                    <p><b>A</b> — create atom</p>
-                    <p><b>Shift + A</b> — delete atom(s)</p>
-                    <p><b>B</b> — create bond</p>
-                    <p><b>Shift + B</b> — delete bond</p>
-                </div>
-
-                <div style="padding-left: 10px; display: flex; flex-direction: column;">
-                    <label for="chemical-formula">Chemical Formula</label>
-                    <p id="chemical-formula"></p>
-                    <p style="margin-top: -25px; font-size: small;">click to copy</p>
+                
+                <div class="vborder"></div>
+                
+                <div id="organizemanual" class="manual">
+                    <h2>Right Click</h2>
+                    <p></p>
                 </div>
 
             </div>
 
-            <div style="border: lightgray solid 1px; height: 0px; margin: 10px; margin-left: 0px; margin-right: 0px;"></div>
-
-            <div id="organizemanual" class="manual" style="height: min-content; padding: 10px;">
-                <h2>Right Click</h2>
-                <p></p>
-            </div>
         </div>
 
     </div>
@@ -139,8 +151,8 @@
     </div>
 
     <script defer>
-        adddropdown('organizeoptions', true, true);
-        adddropdown('templatemolecules', true, true);
+        adddropdown('organizeoptions', true, true, 'rotate one');
+        adddropdown('templatemolecules', true, true, 'h2o');
         addAtomDropdown();
         
         updateRightManual();
