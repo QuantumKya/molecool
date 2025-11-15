@@ -13,6 +13,9 @@ let currentMousePos = new Victor(0, 0);
 
 function getMousePos() { return currentMousePos.clone(); }
 
+let SHIFTING = false;
+let CTRLING = false;
+
 
 
 const ATOMS = {
@@ -24,7 +27,7 @@ const ATOMS = {
     carbon: {
         symbol: 'C',
         valence: 4,
-        color: '#000000',
+        color: '#505050',
     },
     nitrogen: {
         symbol: 'N',
@@ -34,7 +37,7 @@ const ATOMS = {
     oxygen: {
         symbol: 'O',
         valence: 2,
-        color: '#c41313ff',
+        color: '#ba0909ff',
     },
     sodium: {
         symbol: 'Na',
@@ -43,7 +46,7 @@ const ATOMS = {
     phosphorus: {
         symbol: 'P',
         valence: 3,
-        color: '#ffff6aff',
+        color: '#c18f2c',
     },
     sulfur: {
         symbol: 'S',
@@ -171,5 +174,15 @@ function clampToAngleSpace(angle) {
 }
 
 function toTitle(str) {
-    return str.split(' ').map(str => str.charAt(0).toUpperCase() + str.slice(1)).join(' ');
+    const check = /[\s\d]/g;
+    
+    let amendee = str.split(check).map(str => str.charAt(0).toUpperCase() + str.slice(1)).join('');
+    let i = 0;
+    for (let ii = 0; ii < str.length; ii++) {
+        if (check.test(str[ii])) amendee = amendee.slice(0, ii + i) + str[ii] + amendee.slice(ii + i);
+        else continue;
+
+        i++;
+    }
+    return amendee;
 }

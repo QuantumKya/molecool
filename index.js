@@ -314,6 +314,8 @@ canvas.addEventListener('mousedown', (e) => {
                 default:
                     break;
             }
+        default:
+            break;
     }
 });
 
@@ -521,6 +523,14 @@ formulaholder.addEventListener('click', (e) => {
     const str = formulaholder.innerHTML.replace(/<(.*?)>/g, '');
     navigator.clipboard.writeText(str);
 });
+
+const themeselection = document.getElementById('lightdark').querySelector('div');
+themeselection.childNodes.forEach(node => {
+    node.addEventListener('click', e => {
+        const value = e.target.innerHTML.toLowerCase();
+        document.getElementById('container').className = 'theme' + value;
+    });
+})
 
 
 let drawInstructions = {};

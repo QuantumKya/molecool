@@ -44,4 +44,7 @@ Here are all of the devlogs I've written for this project as I've made it. I hop
 [Devlog 14 - Macromolecules? We need room!](./DEVLOG_14.md)
 11/13/2025
 
+[Devlog 15 - Keeping Appearances](./DEVLOG_15.md)
+11/14/2025
+
 Happy Reading!

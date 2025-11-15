@@ -1,17 +1,15 @@
-.dropdownbtn {
-    background-color: whitesmoke;
-}
-
 .dropdown-box {
     position: absolute;
     display: none;
+
+    background-color: var(--bg-color);
+    color: var(--text-color);
 
     flex-direction: column;
     gap: 3px;
     padding: 5px;
 
-    border: #43b1ff solid 1px;
-    background-color: #ffffff;
+    border: var(--hover-bg) solid 1px;
 }
 
 .dropdown-display {
@@ -24,7 +22,7 @@
 }
 
 .dropdown-item-selected {
-    background-color: #ababab;
+    background-color: var(--confirm-color);
 }
 
 .dropdown-item {
@@ -32,8 +30,10 @@
 
     padding: 5px;
     user-select: none;
+
+    transition: 150ms ease-in-out;
 }
 
 .dropdown-item:hover {
-    background-color: #e2e2e2;
+    background-color: var(--hover-bg);
 }

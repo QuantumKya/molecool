@@ -1,14 +1,71 @@
+:root, :root:has(.themelight) {
+    --bg-color: #f2f2f2;
+    --hover-bg: #7aaea5;
+    --border-color: #e3e5ea;
+    --text-color: #000000;
+    --btn-color: #eeeeee;
+    --panel-color: #ffffff;
+    --confirm-color: #5ba67c;
+}
+
+:root:has(.themedark) {
+    --bg-color: #121212;
+    --hover-bg: #15554a;
+    --border-color: #1b1e30;
+    --text-color: #f2f2f2;
+    --btn-color: #333333;
+    --panel-color: #3a3a3a;
+    --confirm-color: #5ba67c;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:has(.themesystem) {
+        --bg-color: #121212;
+        --hover-bg: #15554a;
+        --border-color: #1b1e30;
+        --text-color: #f2f2f2;
+        --btn-color: #333333;
+        --panel-color: #3a3a3a;
+        --confirm-color: #5ba67c;
+    }
+}
+
+
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+button {
+    background-color: var(--btn-color);
+    color: var(--text-color);
+    border: var(--border-color) solid 2px;
+    border-radius: 7px;
+
+    padding: 5px;
+    padding-right: 7px;
+    padding-left: 7px;
+
+    transition: 300ms ease-in-out;
+}
+
+button:hover {
+    background-color: var(--hover-bg);
+}
+
 #chemical-formula {
     margin-top: 3px;
     padding: 10px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     
-    border-radius: 15px;
-    
-    background-color: #333;
-    color: whitesmoke;
+    background-color: var(--btn-color);
+    border: var(--border-color) solid 3px;
+    border-radius: 7px;
     
     font-family: Abel;
-    font-size: xx-large;
+    font-size: x-large;
     user-select: none;
 
     width: max-content;
@@ -17,14 +74,14 @@
     transition-duration: 200ms;
 }
 
-#chemical-formula:hover {
-    background-color: #555;
+#chemical-formula:focus {
+    background-color: var(--confirm-color);
 }
 
-.formula-copied {
-    background-color: #fff42b;
-    color: #333;
+#chemical-formula:hover {
+    background-color: var(--hover-bg);
 }
+
 
 #container {
     display: flex;
@@ -45,17 +102,26 @@
 
 
 
+#controlpanel {
+    margin-left: 10px;
+    background-color: var(--panel-color);
+    padding: 10px;
+}
+
 .hborder {
-    border: lightgray solid 1px;
+    border: var(--border-color) solid 2px;
     height: 0px;
-    margin: 10px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin: 8px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .vborder {
-    border: lightgray solid 1px;
+    border: var(--border-color) solid 2px;
     width: 0px;
+    margin: 8px;
+    margin-right: 0px;
+    margin-left: 0px;
 }
 
 .row-box {
@@ -64,7 +130,9 @@
     
     height: min-content;
     padding: 10px;
-    gap: 10px;
+    gap: 15px;
+
+    background-color: var(--panel-color);
 }
 
 .column-box {
@@ -73,9 +141,20 @@
     
     gap: 15px;
     padding: 10px;
+
+    background-color: var(--panel-color);
 }
 
 .manual {
-    height: min-content;
-    padding: 10px;
+    p {
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    h2 {
+        font-family: Abel;
+        font-weight: 500;
+        font-size: x-large;
+        margin-bottom: 0;
+    }
 }

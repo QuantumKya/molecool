@@ -6,7 +6,7 @@ function adddropdown(nodeid, autoclose = false, display = false, defaultValue = 
 
     dropdownbox.childNodes.forEach((node) => {
         node.addEventListener('mousedown', (e) => {
-            const value = node.innerHTML.toLowerCase();
+            const value = e.target.innerHTML.toLowerCase();
 
             dropdowns[nodeid] = value;
             console.log(dropdowns[nodeid]);
@@ -17,7 +17,7 @@ function adddropdown(nodeid, autoclose = false, display = false, defaultValue = 
             
             if (display) {
                 const display = dropdowndiv.querySelector('.dropdown-display');
-                display.innerHTML = `Selected: <i>${node.innerHTML}</i>`;
+                display.innerHTML = `Selected: <i>${toTitle(e.target.innerHTML)}</i>`;
             }
             if (autoclose) setTimeout(() => dropdown(nodeid), 150);
         });
@@ -26,7 +26,7 @@ function adddropdown(nodeid, autoclose = false, display = false, defaultValue = 
     dropdowns[nodeid] = defaultValue;
     if (display) {
         const display = dropdowndiv.querySelector('.dropdown-display');
-        display.innerHTML = `Selected: <i>${defaultValue.charAt(0).toUpperCase() + defaultValue.slice(1)}</i>`;
+        display.innerHTML = `Selected: <i>${toTitle(defaultValue)}</i>`;
     }
 }
 
@@ -44,7 +44,7 @@ function addAtomDropdown() {
     for (const atom of Object.keys(ATOMS)) {
         const span = document.createElement('span');
         span.className = 'dropdown-item';
-        span.innerHTML = atom.charAt(0).toUpperCase() + atom.slice(1);
+        span.innerHTML = toTitle(atom);
         atombox.appendChild(span);
     }
 

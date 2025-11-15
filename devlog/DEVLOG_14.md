@@ -16,4 +16,4 @@ I also made a bunch of small changes, but those are just fixes and improvements 
 
 See you next time!
 
-[<-- Previous Devlog](DEVLOG_13.md)<!--   [Next Devlog --\>](DEVLOG_15.md)-->
+[<-- Previous Devlog](DEVLOG_13.md)   [Next Devlog -->](DEVLOG_15.md)

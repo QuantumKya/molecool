@@ -10,7 +10,6 @@
     <script src="dropdown.js"></script>
     <link rel="stylesheet" href="dropdown.css">
     <script src="manual.js"></script>
-    <link rel="stylesheet" href="manual.css">
 
     <script src="victor.js"></script>
     <script src="const.js"></script>
@@ -47,11 +46,11 @@
 </head>
 <body>
     
-    <div id="container">
+    <div id="container" class="themesystem">
 
         <canvas id="kansas"></canvas>
 
-        <div style="padding-left: 10px;">
+        <div id="controlpanel">
             <!-- Template and Download Image -->
             <div class="row-box">
                 <div class="column-box">
@@ -78,6 +77,17 @@
                 </div>
 
                 <div class="vborder"></div>
+
+                <div class="dropdown" id="lightdark">
+                    <button class="dropdownbtn" onclick="dropdown('lightdark')">Theme</button>
+                    <div class="dropdown-box">
+                        <span class="dropdown-item">Light</span>
+                        <span class="dropdown-item">Dark</span>
+                        <span class="dropdown-item">System</span>
+                    </div>
+                </div>
+
+                <div class="vborder"></div>
     
                 <div class="column-box">
                     <button onclick="getCanvasImage()" style="margin-bottom: -0.6cm;">Download Canvas As Image</button>
@@ -87,27 +97,26 @@
 
             <div class="hborder"></div>
 
-            <div class="hborder"></div>
-
-            <div class="row-box">
-
-                <div id="editmanual" class="manual">
-                    <h2>Editing Shortcuts</h2>
-                    <p><b>Left Click &amp; Drag</b> — move molecule</p>
-                    <p><b>Shift + Left Click &amp; Drag</b> — select area</p>
-                    <p><b>Ctrl + Left Click &amp; Drag</b> — move individual atom</p>
-                    <p><b>Right Click</b> — perform organize action</p>
-
-                    <br>
+            <div class="column-box manual">
+                <h2>EDITING SHORTCUTS</h2>
+                
+                <div class="row-box" style="margin-bottom: 10px;">
                     
-                    <p><b>A</b> — create atom</p>
-                    <p><b>Shift + A</b> — delete atom(s)</p>
-                    <p><b>B</b> — create bond</p>
-                    <p><b>Shift + B</b> — delete bond</p>
+                    <div id="editmanual">
+                        <p><b>Left Click &amp; Drag</b> — move molecule</p>
+                        <p><b>Shift + Left Click &amp; Drag</b> — select area</p>
+                        <p><b>Ctrl + Left Click &amp; Drag</b> — move individual atom</p>
+                        <p><b>Right Click</b> — perform organize action</p>
+                    </div>
+                    
+                    <div id="editmanual">
+                        <p><b>A</b> — create atom</p>
+                        <p><b>Shift + A</b> — delete atom(s)</p>
+                        <p><b>B</b> — create bond</p>
+                        <p><b>Shift + B</b> — delete bond</p>
+                    </div>
+                    
                 </div>
-
-                <div class="vborder"></div>
-
             </div>
 
             <div class="hborder"></div>
@@ -130,13 +139,21 @@
                 
                 <div id="organizemanual" class="manual">
                     <h2>Right Click</h2>
-                    <p></p>
+                    <p style="margin-left: 15px; margin-top: 10px;"></p>
                 </div>
 
             </div>
 
-        </div>
+            <div class="row-box" style="bottom: 20px;">
 
+                <a href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md" style="text-decoration: none; color: var(--text-color);">
+                    Check out the project's devlogs here!!!
+                </a>
+                
+            </div>
+        
+        </div>
+        
     </div>
 
     <div class="dropdown" id="atomoptions" style="position: absolute; z-index: 10; top: 0px; left: 0px;">
@@ -145,15 +162,11 @@
         </div>
     </div>
 
-    <div style="position: absolute; right: 5px; bottom: 0px;">
-        <a href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md">
-            <p>Check out the project's devlogs here!!!</p>
-        </a>
-    </div>
 
     <script defer>
         adddropdown('organizeoptions', true, true, 'rotate one');
-        adddropdown('templatemolecules', true, true, 'h2o');
+        adddropdown('templatemolecules', false, true, 'h2o');
+        adddropdown('lightdark', false, false, 'system');
         addAtomDropdown();
         
         updateRightManual();
