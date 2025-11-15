@@ -20,4 +20,4 @@ It looks different in light mode, of course.
 
 See you next time!
 
-[<-- Previous Devlog](DEVLOG_14.md)<!--   [Next Devlog --\>](DEVLOG_16.md)-->
+[<-- Previous Devlog](DEVLOG_14.md)   [Next Devlog -->](DEVLOG_16.md)

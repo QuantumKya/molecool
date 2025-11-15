@@ -4,6 +4,8 @@ class Atom {
         this.valence = element.valence;
         this.pos = position;
 
+        this.charge = 0;
+
         const idof = Object.values(ATOMS).indexOf(element);
         this.radius = 45 + 10 * Number(idof > 0) + 2.5 * idof;
     }
@@ -40,7 +42,7 @@ class Atom {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = `${TEXTSIZE*this.radius/75}px Arial`;
-        ctx.fillText(this.elemData.symbol, position.x, position.y);
+        ctx.fillText(this.elemData.symbol + ['', '⁺', '⁻'].at(Math.sign(this.charge)), position.x, position.y);
     }
 
     checkIfMouseHover() {

@@ -5,6 +5,14 @@ class Molecule {
 
         this.selectedAtoms = [];
     }
+
+    get covalentBonds() {
+        return this.bonds.filter(bond => bond.type === 'covalent');
+    }
+
+    get ionicBonds() {
+        return this.bonds.filter(bond => bond.type === 'ionic');
+    }
     
     update() {
 
@@ -18,10 +26,12 @@ class Molecule {
             const pos2 = this.atoms[bond.atom2].pos;
 
             ctx.save();
-            ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'black';
+            ctx.lineWidth = BONDWIDTH;
+
             if (bond.degree === 1) {
-                ctx.moveTo(pos1.x, pos1.y);
-                ctx.lineTo(pos2.x, pos2.y);
+                bond.type === 'covalent' ? this.drawCovalentBond(ctx, pos1, pos2) : this.drawIonicBond(ctx, pos1, pos2);
             }
             else {
                 const offsetwidth = 20;
@@ -35,14 +45,9 @@ class Molecule {
                     const newp1 = pos1.clone().add(normal.clone().multiplyScalar(offset));
                     const newp2 = pos2.clone().add(normal.clone().multiplyScalar(offset));
                     
-                    ctx.moveTo(newp1.x, newp1.y);
-                    ctx.lineTo(newp2.x, newp2.y);
+                    bond.type === 'covalent' ? this.drawCovalentBond(ctx, newp1, newp2) : this.drawIonicBond(ctx, newp1, newp2);
                 }
             }
-
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = BONDWIDTH;
-            ctx.stroke();
             ctx.restore();
         }
         for (let i = 0; i < this.atoms.length; i++) {
@@ -59,6 +64,49 @@ class Molecule {
                 ctx.fill();
                 ctx.restore();
             }
+        }
+    }
+
+    drawCovalentBond(ctx, p1, p2) {
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+    }
+
+    drawIonicBond(ctx, p1, p2) {
+        const dist = p1.distance(p2);
+        const direction = p2.clone().subtract(p1).normalize();
+        const sectlength = 90;
+
+        const times = Math.round(dist / sectlength);
+
+        let start = p1.clone();
+
+        for (let i = 0; i < times; i++) {
+            const buffer = 8;
+            
+            const line1 = start.clone().add(direction.clone().multiplyScalar(sectlength/3 - buffer));
+            const ball = start.clone().add(direction.clone().multiplyScalar(sectlength/2));
+            const line2 = start.clone().add(direction.clone().multiplyScalar(sectlength*2/3 + buffer));
+            const end = start.clone().add(direction.clone().multiplyScalar(sectlength));
+            
+            ctx.beginPath();
+            ctx.moveTo(start.x, start.y);
+            ctx.lineTo(line1.x, line1.y);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(line2.x, line2.y);
+            ctx.lineTo(end.x, end.y);
+            ctx.stroke();
+
+            start.add(direction.clone().multiplyScalar(sectlength));
         }
     }
 
@@ -86,36 +134,37 @@ class Molecule {
 
     destroyAtom(atomId) {
         const killList = this.bonds.filter(bond => (bond.atom1 === atomId || bond.atom2 === atomId));
-        killList.forEach(bond => this.destroyCovalentBond(bond.atom1, bond.atom2, bond.degree));
+        killList.forEach(bond => this.destroyBond(bond.atom1, bond.atom2, bond.degree));
 
         this.atoms.splice(atomId, 1);
     }
 
-    createCovalentBond(atomId1, atomId2, degree = 1) {
+    createBond(type, atom1, atom2, degree) {
         if (degree <= 0) {
             alert("Hey, there can't be a negative (or zero) covalent bond!");
-            return;
+            return false;
         }
-        if (degree > this.atoms[atomId1].valence || degree > this.atoms[atomId2].valence) {
+        if (degree > this.atoms[atom1].valence || degree > this.atoms[atom2].valence) {
             alert("One or more of those molecules are already full.");
-            return;
+            return false;
         }
-        const match = this.bonds.find((bond) => (bond.atom1 === atomId1 && bond.atom2 === atomId2) || (bond.atom2 === atomId1 && bond.atom1 === atomId2));
+        const match = this.bonds.find((bond) => (bond.atom1 === atom1 && bond.atom2 === atom2));
         if (match) {
-            if (match.degree + degree > 3) {
-                alert("That's too much bonding!");
-                return;
+            if (match.type !== type) {
+                alert("A bond of a different type is already there.");
+                return false;
             }
             match.degree += degree;
         }
         else {
-            this.bonds.push({ atom1: atomId1, atom2: atomId2, degree });
+            this.bonds.push({ type, atom1, atom2, degree });
         }
-        this.atoms[atomId1].valence -= degree;
-        this.atoms[atomId2].valence -= degree;
+        this.atoms[atom1].valence -= degree;
+        this.atoms[atom2].valence -= degree;
+        return true;
     }
 
-    destroyCovalentBond(atomId1, atomId2, degree = 1) {
+    destroyBond(atomId1, atomId2, degree = 1) {
         if (degree <= 0) {
             alert("Hey, there can't be a negative (or zero) covalent bond!");
             return;
@@ -132,6 +181,18 @@ class Molecule {
         
         this.atoms[atomId1].valence += Math.min(degree, bond.degree);
         this.atoms[atomId2].valence += Math.min(degree, bond.degree);
+        if (bond.type === 'ionic') {
+            const atom1 = this.atoms[atomId1];
+            const atom2 = this.atoms[atomId2];
+            if (bond.atom1 === atomId1) {
+                atom1.charge += degree;
+                atom2.charge -= degree;
+            }
+            else {
+                atom2.charge += degree;
+                atom1.charge -= degree;
+            }
+        }
         
         if (bond.degree > degree) bond.degree -= degree;
         else if (bond.degree <= degree) {
@@ -139,11 +200,21 @@ class Molecule {
         }
     }
 
+    createCovalentBond(atomId1, atomId2, degree = 1) {
+        this.createBond('covalent', atomId1, atomId2, degree);
+    }
+
+    createIonicBond(donor, recipient, degree = 1) {
+        this.createBond('ionic', donor, recipient, degree);
+        this.atoms[donor].charge += degree;
+        this.atoms[recipient].charge -= degree;
+    }
+
     findNeighborIndices(atomId) {
         const neighborBonds = this.bonds.filter(
             (bond) => bond.atom1 === atomId || bond.atom2 === atomId
         ).map(
-            (bond) => bond.atom1 === atomId ? bond : { atom1: bond.atom2, atom2: bond.atom1, degree: bond.degree }
+            (bond) => bond.atom1 === atomId ? bond : { type: bond.type, atom1: bond.atom2, atom2: bond.atom1, degree: bond.degree }
         );
 
         const neighbors = neighborBonds.map(
@@ -210,11 +281,6 @@ class Molecule {
                 return angleA - angleB;
             }
         );
-        
-        if (neighbors.find((atom) => this.atoms.indexOf(atom) === anchorId) === undefined) {
-            alert("Anchor atom isn't a neighbor!");
-            return;
-        }
         
         while (this.atoms.indexOf(neighbors[0]) !== anchorId) {
             neighbors.push(neighbors.shift());
@@ -363,7 +429,8 @@ class Molecule {
             const cObj = {};
             for (const aid of sec) {
                 const atom = this.atoms[aid];
-                const sym = atom.elemData.symbol;
+                console.log(atom.charge);
+                const sym = atom.elemData.symbol + ['', '<sup>+</sup>', '<sup>-</sup>'].at(Math.sign(atom.charge));
 
                 if (cObj[sym] === undefined) cObj[sym] = 0;
                 cObj[sym]++;
@@ -401,7 +468,7 @@ class Molecule {
 
             const str = sortedPairs.map(pair => {
                 const s = `${pair[0]}<sub>${pair[1]}</sub>`;
-                if (pair[1] === 1) return s.split('<')[0];
+                if (pair[1] === 1) return s.split('<sub>')[0];
                 return s;
             }).join('');
             return str;

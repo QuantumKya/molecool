@@ -85,6 +85,15 @@ function ammonia() {
     return ammonia;
 }
 
+function salt() {
+    const Na = new Atom(ATOMS.sodium, ccenter.clone().add(new Victor(-200, 0)));
+    const Cl = new Atom(ATOMS.chlorine, ccenter.clone().add(new Victor(200, 0)));
+
+    const salt = new Molecule(Na, Cl);
+    salt.createIonicBond(0, 1);
+    return salt;
+}
+
 let mol = h2o();
 
 function loadTemplateMolecule() {
@@ -103,7 +112,10 @@ function cloneMolecule(molecule) {
     });
 
     const m = new Molecule(...mAtoms);
-    for (const bond of molecule.bonds) m.createCovalentBond(bond.atom1, bond.atom2, bond.degree);
+    for (const bond of molecule.bonds) {
+        if (bond.type === 'ionic') m.createIonicBond(bond.atom1, bond.atom2, bond.degree);
+        else m.createCovalentBond(bond.atom1, bond.atom2, bond.degree);
+    }
     return m;
 }
 
@@ -149,6 +161,7 @@ let addingAtom = false;
 let bonding = false;
 let bondingAtom = -1;
 let bondingDegree = 1;
+let bondingType = 'covalent';
 
 let organizeStage = 'null';
 let centerId = -1;
@@ -179,6 +192,12 @@ canvas.addEventListener('mousedown', (e) => {
 
     switch (e.button) {
         case 0:
+            if (bonding) {
+                if (bondingType === 'covalent') bondingType = 'ionic';
+                else if (bondingType === 'ionic') bondingType = 'covalent';
+                break;
+            }
+
             if (dropdowns['organizeoptions'] === 't intersection') {
                 bendIndex += 1;
                 if (bendIndex >= 2) bendIndex = -1;
@@ -251,6 +270,13 @@ canvas.addEventListener('mousedown', (e) => {
                         break;
                     }
                     anchorId = hovereeId;
+
+                    if (!mol.findNeighborIndices(centerId).includes(anchorId)) {
+                        alert("Anchor atom isn't a neighbor!");
+                        organizeStage = 'setAnchor';
+                        anchorId = -1;
+                        break;
+                    }
 
                     console.log(Molecule.transformFunctions);
                     if (Molecule.transformFunctions[orgoption].needsAngle) {
@@ -326,8 +352,8 @@ canvas.addEventListener('mouseup', (e) => {
     
     if (e.button === 0) {
 
-        if (e.shiftKey) {
-            if (selectingAtoms) selectingAtoms = false;
+        if (selectingAtoms) {
+            selectingAtoms = false;
             mol.findInBox(boxCorner, getMousePos());
         }
         else if (draggingAtom !== -1) {
@@ -458,7 +484,7 @@ document.addEventListener('keydown', (e) => {
                 let didsomething = false;
                 for (const bond of [...mol.bonds]) {
                     if (mol.selectedAtoms.includes(bond.atom1) && mol.selectedAtoms.includes(bond.atom2)) {
-                        mol.destroyCovalentBond(bond.atom1, bond.atom2, bond.degree);
+                        mol.destroyBond(bond.atom1, bond.atom2, bond.degree);
                         didsomething = true;
                     }
                 }
@@ -472,7 +498,7 @@ document.addEventListener('keydown', (e) => {
 
             const a1 = mol.bonds[bondHoveree].atom1;
             const a2 = mol.bonds[bondHoveree].atom2;
-            mol.destroyCovalentBond(a1, a2);
+            mol.destroyBond(a1, a2);
             saveChange();
             return;
         }
@@ -485,6 +511,8 @@ document.addEventListener('keydown', (e) => {
             if (!bonding) {
                 bonding = true;
                 bondingAtom = hovereeId;
+                bondingType = 'covalent';
+                bondingDegree = 1;
 
                 setDraw('bondtext', (ctx) => {
                     ctx.save();
@@ -493,16 +521,19 @@ document.addEventListener('keydown', (e) => {
                     ctx.font = '30px Roboto';
                     ctx.fillText('Choose another atom to bond with!', canvas.width / 2, 15);
                     ctx.font = '20px Roboto';
-                    ctx.fillText('Right click to change degree of bond', canvas.width / 2, 45);
+                    ctx.fillText('Right click to change degree of bond, Left click to change type', canvas.width / 2, 45);
                     ctx.fillText(`Bond degree: ${bondingDegree}`, canvas.width / 2, 75);
+                    ctx.fillText(`Bond type: ${bondingType}`, canvas.width / 2, 105);
                     ctx.restore();
                 });
             }
             else {
-                mol.createCovalentBond(bondingAtom, hovereeId, bondingDegree);
+                if (bondingType === 'covalent') mol.createCovalentBond(bondingAtom, hovereeId, bondingDegree);
+                else if (bondingType === 'ionic') mol.createIonicBond(bondingAtom, hovereeId, bondingDegree);
 
                 bonding = false;
                 bondingAtom = -1;
+                bondingType = '';
                 clearDraw('bondtext');
 
                 saveChange();
@@ -578,7 +609,7 @@ function main() {
 
     // DEBUG ZONE -----------------------------------------------
 
-    
+    console.log(mol.ionicBonds);
 }
 
 function run() {

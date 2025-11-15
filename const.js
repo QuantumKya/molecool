@@ -41,7 +41,7 @@ const ATOMS = {
     },
     sodium: {
         symbol: 'Na',
-        valence: 7,
+        valence: 1,
     },
     phosphorus: {
         symbol: 'P',
@@ -60,7 +60,8 @@ const ATOMS = {
     },
     potassium: {
         symbol: 'K',
-        valence: 17,
+        valence: 1,
+        color: '#cecece',
     },
 };
 
