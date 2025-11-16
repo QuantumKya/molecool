@@ -9,12 +9,11 @@ For testing, I made a catalogue (of only 3 items lol) of molecules that you can 
 - Ethene
 - Ammonia
 
-
 I'll add more later lol.
 
 <br>
 <br>
 
-Thank you for reading, see you!
+Retrospective note: this is the shortest devlog of all of them, which I think is funny for such an early one. That's all.
 
 [<-- Previous Devlog](DEVLOG_2.md)   [Next Devlog -->](DEVLOG_4.md)

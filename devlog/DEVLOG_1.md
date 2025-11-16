@@ -22,8 +22,7 @@ There's no logic for location of atoms, so I've placed these manually.
 So far, I've made some classes for atoms and the molecule, which are in their respective files. Here's the `Atom` class.
 
 ![Atom Class](img/devlog_1_atom_class.png)
-The `update` function is hiding some upcoming changes, so be patient!
-
+The `update` function is hiding some upcoming changes, so be patient!  
 I've also made some boilerplate animation and testing code, which is in `index.js`.
 
 In `const.js` is located possibly the dumbest architecture in this project, the `atoms` object!!!

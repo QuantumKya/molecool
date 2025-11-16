@@ -9,9 +9,9 @@ But I do have like 8! Here's a demonstration.
 
 ![Maine Demo Kiya](img/devlog_9_demo_kiya.gif)
 
-The dropdown's appearing where you click was pretty hard to get working, but it's great now!
+Making the dropdown appear where you click was kinda tricky to get working, but it's great now!
 
-I also made it so you can't make bonds that couldn't exist in real life; e.g., H3. Yeah, Hydrogen can only have one covalent bond lol.
+I also made it so you can't make bonds that couldn't exist in real life; e.g., H3. Yeah, hydrogen can only have one covalent bond.  
 Here's the simple fix:
 
 ```js

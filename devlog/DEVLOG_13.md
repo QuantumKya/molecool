@@ -3,7 +3,8 @@
 
 #### Take that, thermodynamics!
 
-When you're making molecules, you're bound to make some mistakes. That's why I added the ability to undo and redo! Press Ctrl+Z to undo and Ctrl+Y (or Ctrl+Shift+Z) to redo!
+When you're making molecules, you're bound to make some mistakes. That's why I added the ability to undo and redo!  
+Press Ctrl+Z to undo and Ctrl+Y (or Ctrl+Shift+Z) to redo!
 
 ###### Fun Fact: I prefer Ctrl+Y.
 

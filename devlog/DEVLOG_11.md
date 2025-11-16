@@ -5,8 +5,7 @@
 
 After my last addition, I thought for a while about what to add next. I decided to add a display of the chemical formula of your creation to the right of the dashboard.
 
-How would I get that, you ask? With a very large and complex class method.
-
+How would I get that, you ask? With a very large and complex class method.  
 I named mine `getFormula`. Here's the first half of it:
 ```js
 // get different sections

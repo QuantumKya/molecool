@@ -161,6 +161,10 @@ class Molecule {
         }
         this.atoms[atom1].valence -= degree;
         this.atoms[atom2].valence -= degree;
+        if (type === 'ionic') {
+            this.atoms[atom1].charge += degree;
+            this.atoms[atom2].charge -= degree;
+        }
         return true;
     }
 
@@ -206,8 +210,6 @@ class Molecule {
 
     createIonicBond(donor, recipient, degree = 1) {
         this.createBond('ionic', donor, recipient, degree);
-        this.atoms[donor].charge += degree;
-        this.atoms[recipient].charge -= degree;
     }
 
     findNeighborIndices(atomId) {
@@ -429,7 +431,6 @@ class Molecule {
             const cObj = {};
             for (const aid of sec) {
                 const atom = this.atoms[aid];
-                console.log(atom.charge);
                 const sym = atom.elemData.symbol + ['', '<sup>+</sup>', '<sup>-</sup>'].at(Math.sign(atom.charge));
 
                 if (cObj[sym] === undefined) cObj[sym] = 0;

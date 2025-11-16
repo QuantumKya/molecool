@@ -23,4 +23,4 @@ The other changes are just fixes that make things nicer.
 
 Don't make anything dangerous!
 
-[<-- Previous Devlog](DEVLOG_15.md)<!--   [Next Devlog --\>](DEVLOG_16.md)-->
+[<-- Previous Devlog](DEVLOG_15.md)   [Next Devlog -->](DEVLOG_17.md)

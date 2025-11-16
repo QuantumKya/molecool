@@ -11,6 +11,7 @@ Maybe... people should be able to add atoms to make their own molecules! So I ad
 - Unbonding atoms
 
 Here's an example of me doing all of those things.
+
 ![Demo Karoonga](img/devlog_7_demo.gif)
 
 Right now, you can only add Hydrogen atoms, but I'll figure out a choice implementation method later.

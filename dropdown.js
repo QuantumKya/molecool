@@ -41,7 +41,7 @@ function dropdown(nodeid) {
 
 function addAtomDropdown() {
     const atombox = document.getElementById('atom-dropdown-box');
-    for (const atom of Object.keys(ATOMS)) {
+    for (const atom of Object.keys(ELEMENTS)) {
         const span = document.createElement('span');
         span.className = 'dropdown-item';
         span.innerHTML = toTitle(atom);
@@ -56,7 +56,7 @@ const atomDropdownHandler = (e) => {
     addingAtom = false;
     const selectedAtom = dropdowns['atomoptions'];
     if (selectedAtom !== 'none') {
-        mol.atoms.push(new Atom(ATOMS[selectedAtom], getMousePos()));
+        mol.atoms.push(new Atom(ELEMENTS[selectedAtom], getMousePos()));
         [...document.querySelector('#atom-dropdown-box').children].forEach(
             (option) => option.classList.toggle('dropdown-item-selected', false)
         );

@@ -22,12 +22,12 @@ function getCanvasImage() {
 
 
 function ethylene() {
-    const C1 = new Atom(ATOMS.carbon, new Victor(ccenter.x - 100, ccenter.y));
-    const C2 = new Atom(ATOMS.carbon, new Victor(ccenter.x + 100, ccenter.y));
-    const H11 = new Atom(ATOMS.hydrogen, new Victor(ccenter.x - 150, ccenter.y - 150));
-    const H12 = new Atom(ATOMS.hydrogen, new Victor(ccenter.x - 150, ccenter.y + 150));
-    const H21 = new Atom(ATOMS.hydrogen, new Victor(ccenter.x + 150, ccenter.y - 150));
-    const H22 = new Atom(ATOMS.hydrogen, new Victor(ccenter.x + 150, ccenter.y + 150));
+    const C1 = new Atom(ELEMENTS.carbon, new Victor(ccenter.x - 100, ccenter.y));
+    const C2 = new Atom(ELEMENTS.carbon, new Victor(ccenter.x + 100, ccenter.y));
+    const H11 = new Atom(ELEMENTS.hydrogen, new Victor(ccenter.x - 150, ccenter.y - 150));
+    const H12 = new Atom(ELEMENTS.hydrogen, new Victor(ccenter.x - 150, ccenter.y + 150));
+    const H21 = new Atom(ELEMENTS.hydrogen, new Victor(ccenter.x + 150, ccenter.y - 150));
+    const H22 = new Atom(ELEMENTS.hydrogen, new Victor(ccenter.x + 150, ccenter.y + 150));
     
     const methane = new Molecule(C1, C2, H11, H12, H21, H22);
     methane.createCovalentBond(0, 1, 2);
@@ -45,8 +45,8 @@ function methane() {
         offsetvectors.push(polarVec(angleoff, 200));
     }
 
-    const C = new Atom(ATOMS.carbon, ccenter.clone());
-    const Hs = offsetvectors.map(vec => new Atom(ATOMS.hydrogen, ccenter.clone().add(vec)));
+    const C = new Atom(ELEMENTS.carbon, ccenter.clone());
+    const Hs = offsetvectors.map(vec => new Atom(ELEMENTS.hydrogen, ccenter.clone().add(vec)));
     
     const methane = new Molecule(C, ...Hs);
     for (let i = 0; i < 4; i++) methane.createCovalentBond(0, i+1);
@@ -60,9 +60,9 @@ function h2o() {
         return polarVec(angleoff, 200);
     });
     
-    const O = new Atom(ATOMS.oxygen, ccenter);
-    const H1 = new Atom(ATOMS.hydrogen, ccenter.clone().add(offsetvectors[0]));
-    const H2 = new Atom(ATOMS.hydrogen, ccenter.clone().add(offsetvectors[1]));
+    const O = new Atom(ELEMENTS.oxygen, ccenter);
+    const H1 = new Atom(ELEMENTS.hydrogen, ccenter.clone().add(offsetvectors[0]));
+    const H2 = new Atom(ELEMENTS.hydrogen, ccenter.clone().add(offsetvectors[1]));
 
     const h2o = new Molecule(O, H1, H2);
     h2o.createCovalentBond(0, 1);
@@ -77,8 +77,8 @@ function ammonia() {
         offsetvectors.push(polarVec(angleoff, 200));
     }
 
-    const N = new Atom(ATOMS.nitrogen, ccenter.clone());
-    const Hs = offsetvectors.map(vec => new Atom(ATOMS.hydrogen, ccenter.clone().add(vec)));
+    const N = new Atom(ELEMENTS.nitrogen, ccenter.clone());
+    const Hs = offsetvectors.map(vec => new Atom(ELEMENTS.hydrogen, ccenter.clone().add(vec)));
 
     const ammonia = new Molecule(N, ...Hs);
     for (let i = 0; i < 3; i++) ammonia.createCovalentBond(0, i+1);
@@ -86,8 +86,8 @@ function ammonia() {
 }
 
 function salt() {
-    const Na = new Atom(ATOMS.sodium, ccenter.clone().add(new Victor(-200, 0)));
-    const Cl = new Atom(ATOMS.chlorine, ccenter.clone().add(new Victor(200, 0)));
+    const Na = new Atom(ELEMENTS.sodium, ccenter.clone().add(new Victor(-200, 0)));
+    const Cl = new Atom(ELEMENTS.chlorine, ccenter.clone().add(new Victor(200, 0)));
 
     const salt = new Molecule(Na, Cl);
     salt.createIonicBond(0, 1);
@@ -100,6 +100,7 @@ function loadTemplateMolecule() {
     const newmolecule = dropdowns['templatemolecules'];
     if (!newmolecule) return;
     eval(`mol = ${newmolecule}();`);
+    saveChange();
 }
 
 
@@ -107,14 +108,13 @@ function loadTemplateMolecule() {
 
 function cloneMolecule(molecule) {
     const mAtoms = molecule.atoms.map((a) => {
-        const newA = new Atom(a.elemData, a.pos);
+        const newA = new Atom(a.elemData, new Victor(a.pos.x, a.pos.y));
         return newA;
     });
 
     const m = new Molecule(...mAtoms);
     for (const bond of molecule.bonds) {
-        if (bond.type === 'ionic') m.createIonicBond(bond.atom1, bond.atom2, bond.degree);
-        else m.createCovalentBond(bond.atom1, bond.atom2, bond.degree);
+        m.createBond(bond.type, bond.atom1, bond.atom2, bond.degree);
     }
     return m;
 }
@@ -145,7 +145,6 @@ function saveChange() {
         stateBack = 0;
     }
     stateBuffer.push(cloneMolecule(mol));
-    updateState();
 }
 
 
@@ -358,7 +357,6 @@ canvas.addEventListener('mouseup', (e) => {
         }
         else if (draggingAtom !== -1) {
             draggingAtom = -1;
-            saveChange();
         }
         canvas.style.cursor = 'default';
     }
@@ -445,8 +443,6 @@ document.addEventListener('keydown', (e) => {
 
     if (e.code === 'KeyA') {
         if (e.shiftKey) {
-            if (!confirm('Delete selected atom(s)?')) return;
-
             if (mol.selectedAtoms.length > 0) {
                 let i = 0;
                 let lastId = NaN;
@@ -479,8 +475,6 @@ document.addEventListener('keydown', (e) => {
 
             if (mol.selectedAtoms.length > 0) {
 
-                if (!confirm('Delete all bonds connecting selected atoms?')) return;
-
                 let didsomething = false;
                 for (const bond of [...mol.bonds]) {
                     if (mol.selectedAtoms.includes(bond.atom1) && mol.selectedAtoms.includes(bond.atom2)) {
@@ -493,8 +487,6 @@ document.addEventListener('keydown', (e) => {
             }
             
             if (bondHoveree === undefined) return;
-            
-            if (!confirm('Delete selected bond?')) return;
 
             const a1 = mol.bonds[bondHoveree].atom1;
             const a2 = mol.bonds[bondHoveree].atom2;
@@ -561,7 +553,12 @@ themeselection.childNodes.forEach(node => {
         const value = e.target.innerHTML.toLowerCase();
         document.getElementById('container').className = 'theme' + value;
     });
-})
+});
+
+function clearMolecule() {
+    mol = new Molecule();
+    saveChange();
+}
 
 
 let drawInstructions = {};
@@ -608,8 +605,6 @@ function main() {
     for (const drawfunc of Object.values(drawInstructions)) drawfunc(ctx);
 
     // DEBUG ZONE -----------------------------------------------
-
-    console.log(mol.ionicBonds);
 }
 
 function run() {
@@ -626,6 +621,8 @@ function run() {
     else requestAnimationFrame(run);
 }
 
+
+let testmol = mol;
 
 updateFormula();
 run();

@@ -12,6 +12,6 @@ When you select a tool, it will update the manual to the right of the canvas to 
 <br>
 <br>
 
-I hope you like the descriptions, and if they're not good, I can change them if you tell me on the Github repository.
+I hope you like the descriptions, and if they're not good, I can change them if you tell me on the Github repository (or elsewhere. elsehow?)
 
 [<-- Previous Devlog](DEVLOG_9.md)   [Next Devlog -->](DEVLOG_11.md)

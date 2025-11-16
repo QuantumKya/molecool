@@ -6,12 +6,15 @@
 For multiple applications in this project, I need to be able to find every atom connected to one. I imagine the process of finding it like this:
 
 1. Get the atom you want to find the surroundings of.
+
 ![Step 1](img/devlog_8_step1.png)
 
 2. Find the neighbors of that atom (I have a function for that already!)
+
 ![Step 2](img/devlog_8_step2.png)
 
 3. Find the neighbors of THOSE atoms and add them to the list if they're not in it already.
+
 ![Step 3](img/devlog_8_step3.png)
 
 4. Repeat however many times required.
@@ -19,7 +22,7 @@ For multiple applications in this project, I need to be able to find every atom 
 And that's the tricky part. How do you know when to stop it? Well, just stop recursing whenever every neighbor of every probed atom is already accounted for!
 
 ## Implementation
-Here's my function for this!
+Here's my function for all this!
 ```js
 findAllConnected(atomId) {
     const allConnected = [atomId];

@@ -6,7 +6,7 @@ class Atom {
 
         this.charge = 0;
 
-        const idof = Object.values(ATOMS).indexOf(element);
+        const idof = Object.values(ELEMENTS).indexOf(element);
         this.radius = 45 + 10 * Number(idof > 0) + 2.5 * idof;
     }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Molecule Editor</title>
+    <title>Molecule Kitchen</title>
 
     <link rel="stylesheet" href="main.css">
 
@@ -16,6 +16,8 @@
     <script src="atom.js"></script>
     <script src="molecule.js"></script>
     <script src="index.js" defer></script>
+
+    <script src="file.js" defer></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,16 +126,26 @@
 
             <div class="row-box">
 
-                <div class="dropdown" id="organizeoptions" style="padding: 10px; min-width: 150px;">
-                    <button class="dropdownbtn" onclick="dropdown('organizeoptions')">Organize Option</button>
-                    <div class="dropdown-box">
-                        <span class="dropdown-item">Rotate One</span>
-                        <span class="dropdown-item">Rotate All</span>
-                        <span class="dropdown-item">Same Distance</span>
-                        <span class="dropdown-item">Equally Angled</span>
-                        <span class="dropdown-item">T Intersection</span>
+                <div class="column-box">
+
+                    <div class="dropdown" id="organizeoptions" style="min-width: 150px;">
+                        <button class="dropdownbtn" onclick="dropdown('organizeoptions')">Organize Option</button>
+                        <div class="dropdown-box">
+                            <span class="dropdown-item">Rotate One</span>
+                            <span class="dropdown-item">Rotate All</span>
+                            <span class="dropdown-item">Same Distance</span>
+                            <span class="dropdown-item">Equally Angled</span>
+                            <span class="dropdown-item">T Intersection</span>
+                        </div>
+                        <p class="dropdown-display">Selected: none</p>
                     </div>
-                    <p class="dropdown-display">Selected: none</p>
+
+                    <div style="display: flex; flex-direction: row; height: 100%;">
+
+                    <button onclick="clearMolecule()" style="align-self: flex-end;">Clear Molecule</button>
+
+                    </div>
+
                 </div>
                 
                 <div class="vborder"></div>
@@ -145,11 +157,33 @@
 
             </div>
 
+            <div class="hborder"></div>
+
+            <div class="row-box">
+
+                <div class="column-box">
+
+                    <button onclick="encodeMolecule(mol)">Save Molecule (.mkf)</button>
+                    <button onclick="encodeMoleculeJSON(mol)">Save Molecule (.json)</button>
+
+                </div>
+                
+                <div class="vborder"></div>
+
+                <div class="column-box">
+
+                    <button id="loadmolecule">Load Molecule</button>
+                    <input type="file" accept=".mkf, .json" style="display: none;">
+
+                </div>
+
+            </div>
+
             <div class="row-box" style="bottom: 20px;">
 
-                <a href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md" style="text-decoration: none; color: var(--text-color);">
-                    Check out the project's devlogs here!!!
-                </a>
+                <a id="devloglink" href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md"
+                style="display: none;"></a>
+                <button onclick="document.getElementById('devloglink').click()">Check out the project's devlogs here!!!</button>
                 
             </div>
         

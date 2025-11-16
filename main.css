@@ -47,6 +47,8 @@ button {
     padding-right: 7px;
     padding-left: 7px;
 
+    width: fit-content;
+
     transition: 300ms ease-in-out;
 }
 

@@ -3,7 +3,8 @@
 
 #### Darwinism?!
 
-Someone pointed out that it's really tedious to change between editing modes with a dropdown. I fully agree! (To be honest, I kinda just made it that way to reuse code from the other dropdowns.)
+Someone pointed out that it's really tedious to change between editing modes with a dropdown. I fully agree!  
+(To be honest, I kinda just made it that way to reuse code from the other dropdowns.)
 
 I will rectify this tedium by introducing...
 ## Shortcuts

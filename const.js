@@ -18,7 +18,7 @@ let CTRLING = false;
 
 
 
-const ATOMS = {
+const ELEMENTS = {
     hydrogen: {
         symbol: 'H',
         valence: 1,
@@ -65,6 +65,9 @@ const ATOMS = {
     },
 };
 
+function getElement(symbol) {
+    return Object.values(ELEMENTS).find(elem => elem.symbol === symbol);
+}
 
 
 
@@ -186,4 +189,18 @@ function toTitle(str) {
         i++;
     }
     return amendee;
+}
+
+function saveTextToFile(data, filename) {
+    const dataBlob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(dataBlob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
