@@ -23,7 +23,9 @@ function adddropdown(nodeid, autoclose = false, display = false, defaultValue = 
         });
     });
 
-    dropdowns[nodeid] = defaultValue;
+    const entries = [...dropdownbox.children].map(option => option.innerHTML.toLowerCase());
+    if (entries.includes(defaultValue)) setDropdown(nodeid, defaultValue);
+
     if (display) {
         const display = dropdowndiv.querySelector('.dropdown-display');
         display.innerHTML = `Selected: <i>${toTitle(defaultValue)}</i>`;
@@ -37,6 +39,16 @@ function dropdown(nodeid) {
     
     if (nodeid === 'edittools') updateLeftManual();
     if (nodeid === 'organizeoptions') updateRightManual();
+}
+
+function setDropdown(nodeid, value) {
+    const dropdowndiv = document.getElementById(nodeid);
+    const dropdownbox = dropdowndiv.querySelector('.dropdown-box');
+
+    dropdowns[nodeid] = value;
+    [...dropdownbox.children].forEach(
+        (option) => option.classList.toggle('dropdown-item-selected', value === option.innerHTML.toLowerCase())
+    );
 }
 
 function addAtomDropdown() {

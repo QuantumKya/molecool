@@ -552,10 +552,14 @@ themeselection.childNodes.forEach(node => {
     node.addEventListener('click', e => {
         const value = e.target.innerHTML.toLowerCase();
         document.getElementById('container').className = 'theme' + value;
+
+        localStorage.setItem('theme-preference', value);
     });
 });
 
 function clearMolecule() {
+    if (!confirm('Clear everything?')) return;
+
     mol = new Molecule();
     saveChange();
 }
@@ -572,6 +576,16 @@ function clearDraw(name) {
 function updateFormula() {
     console.log(mol.getFormula());
     document.getElementById('chemical-formula').innerHTML = mol.getFormula();
+}
+
+function init() {
+    updateFormula();
+
+    const themePreference = localStorage.getItem('theme-preference');
+    if (themePreference) {
+        document.getElementById('container').className = 'theme' + themePreference;
+        setDropdown('lightdark', themePreference);
+    }
 }
 
 function main() {
@@ -624,5 +638,5 @@ function run() {
 
 let testmol = mol;
 
-updateFormula();
+init();
 run();
