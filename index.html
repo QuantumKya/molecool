@@ -79,22 +79,27 @@
                     <p style="margin-top: -25px; font-size: small;">click to copy</p>
                 </div>
 
-                <div class="vborder"></div>
+                <!-- <div class="vborder"></div>
 
-                <div class="dropdown" id="lightdark">
-                    <button class="dropdownbtn" onclick="dropdown('lightdark')">Theme</button>
-                    <div class="dropdown-box">
-                        <span class="dropdown-item">Light</span>
-                        <span class="dropdown-item">Dark</span>
-                        <span class="dropdown-item">System</span>
-                    </div>
-                </div>
+                <canvas id="diagramcanvas"></canvas> -->
 
                 <div class="vborder"></div>
-    
+
                 <div class="column-box">
-                    <button onclick="getCanvasImage()" style="margin-bottom: -0.6cm;">Download Canvas As Image</button>
-                    <p>(for bug reporting or showcase)</p>
+                    
+                    <a id="devloglink" href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md"
+                    style="display: none;"></a>
+                    <button onclick="document.getElementById('devloglink').click()">Check out the project's devlogs here!!!</button>
+                    
+                    <div class="dropdown" id="lightdark">
+                        <button class="dropdownbtn" onclick="dropdown('lightdark')">Theme</button>
+                        <div class="dropdown-box">
+                            <span class="dropdown-item">Light</span>
+                            <span class="dropdown-item">Dark</span>
+                            <span class="dropdown-item">System</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -177,14 +182,13 @@
 
                 </div>
 
-            </div>
+                <div class="vborder"></div>
+    
+                <div class="column-box">
+                    <button onclick="getCanvasImage()">Download Canvas</button>
+                    <button onclick="getCanvasImage()">Download Diagram</button>
+                </div>
 
-            <div class="row-box" style="bottom: 20px;">
-
-                <a id="devloglink" href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md"
-                style="display: none;"></a>
-                <button onclick="document.getElementById('devloglink').click()">Check out the project's devlogs here!!!</button>
-                
             </div>
         
         </div>

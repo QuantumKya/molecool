@@ -93,4 +93,4 @@ Anyway, that's all for this update.
 
 Spread your compounds across the internet! Don't make a virus, though.
 
-[<-- Previous Devlog](DEVLOG_16.md)<!--   [Next Devlog --\>](DEVLOG_18.md)-->
+[<-- Previous Devlog](DEVLOG_16.md)   [Next Devlog -->](DEVLOG_18.md)

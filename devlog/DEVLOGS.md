@@ -1,4 +1,5 @@
 # Devlogs - Molecule Kitchen
+### Timeline
 
 Here are all of the devlogs I've written for this project as I've made it. I hope you like them!
 
@@ -52,5 +53,8 @@ Here are all of the devlogs I've written for this project as I've made it. I hop
 
 [Devlog 17 - Forever Chemicals](./DEVLOG_17.md)  
 11/15/2025
+
+[Devlog 18 - ~~Analysis Catalysis~~ Enzymatic Inhibition](./DEVLOG_18.md)  
+11/17/2025
 
 Happy Reading!

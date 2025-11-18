@@ -482,4 +482,102 @@ class Molecule {
         }
         return Object.entries(seenObj).map((ent) => (ent[1] > 1 ? `${ent[1]} ` : '') + ent[0]).join(' + ');
     }
+
+
+
+    findShortestPath(startId, endId) {
+        const paths = [[startId]];
+        const visited = new Set();
+        visited.add(startId);
+
+        while (paths.length > 0) {
+            const currentPath = paths.shift();
+            const currentAtom = currentPath.at(-1);
+
+            if (currentAtom === endId) {
+                return currentPath;
+            }
+
+            for (const neigh of this.findNeighborIndices(currentAtom)) {
+                if (visited.has(neigh)) continue;
+                visited.add(neigh);
+                const newPath = [...currentPath, neigh];
+                paths.push(newPath);
+            }
+        }
+        return null;
+    }
+
+    findCenterAtom(sampleeId) {
+        const atomSample = this.findAllConnected(sampleeId);
+
+        let max = Infinity;
+        const sums = atomSample.map(aId => {
+            // finding distance sums for each atom
+            const distances = atomSample.filter(bId => bId !== aId).map(bId => {
+                return this.findShortestPath(aId, bId).length - 1;
+            });
+            const sum = distances.reduce((a,b)=>a+b, 0);
+            if (sum < max) max = sum;
+            return sum;
+        });
+
+        const centers = sums.filter(sum => sum === max).map((sum, i) => atomSample[i]);
+        return Boolean(centers) ? centers : null;
+    }
+
+    drawDiagram() {
+        const diagramCanvas = document.querySelector('canvas#diagramcanvas');
+        const ctx = diagramCanvas.getContext('2d');
+
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const centerAtom = this.findCenterAtom(0);
+        const moleculeGroup = this.findAllConnected(0);
+
+        // drawing settings
+        ctx.save();
+        ctx.translate(diagramCanvas.width / 2, diagramCanvas.height / 2);
+        ctx.font = '48px Arial';
+        ctx.fillStyle = 'black';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+
+
+        const centerSymbol = this.atoms[centerAtom[0]].elemData.symbol;
+        ctx.fillText(centerSymbol, 0, 0);
+
+        // NOTE: GENERALIZE `centerAtom[0]`
+
+        const positions = new Map();
+        positions.set(centerAtom[0], new Victor(0, 0));
+
+        const depth = new Map();
+        depth.set(centerAtom[0], 0);
+
+        let queue = [centerAtom[0]];
+        let visited = new Set([centerAtom[0]]);
+
+        while (queue.length > 0) {
+            const currentAtom = queue.shift();
+            const currentDepth = depth.get(currentAtom);
+            const currentPos = positions.get(currentAtom);
+
+            const neighbors = this.findNeighborIndices(currentAtom);
+
+            neighbors.forEach(neigh => {
+                if (visited.has(neigh)) return;
+                visited.add(neigh);
+                queue.push(neigh);
+
+
+            });
+        }
+
+
+
+        ctx.restore();
+    }
 }
