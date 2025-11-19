@@ -120,31 +120,29 @@ function cloneMolecule(molecule) {
 }
 
 const stateBuffer = [cloneMolecule(mol)];
-let stateBack = 0;
+let stateIndex = 0;
 
 function updateState() {
-    const backMol = stateBuffer.at(-(stateBack+1));
-    mol = backMol;
+    mol = cloneMolecule(stateBuffer[stateIndex]);
 }
 
 function undo() {
-    if (stateBack + 1 >= stateBuffer.length) return;
-    stateBack++;
+    if (stateIndex <= 0) return;
+    stateIndex--;
     updateState();
 }
 
 function redo() {
-    if (stateBack <= 0) return;
-    stateBack--;
+    if (stateIndex >= stateBuffer.length - 1) return;
+    stateIndex++;
     updateState();
 }
 
 function saveChange() {
-    if (stateBack > 0) {
-        stateBuffer.splice(-(stateBack+1));
-        stateBack = 0;
-    }
+    stateBuffer.splice(stateIndex+1)
     stateBuffer.push(cloneMolecule(mol));
+    stateIndex = stateBuffer.length - 1;
+    updateState();
 }
 
 
@@ -196,14 +194,14 @@ canvas.addEventListener('mousedown', (e) => {
                 else if (bondingType === 'ionic') bondingType = 'covalent';
                 break;
             }
-
-            if (dropdowns['organizeoptions'] === 't intersection') {
-                bendIndex += 1;
-                if (bendIndex >= 2) bendIndex = -1;
+            
+            if (organizeStage !== 'null') {
+                if (dropdowns['organizeoptions'] === 't intersection') {
+                    bendIndex += 1;
+                    if (bendIndex >= 2) bendIndex = -1;
+                }
                 break;
             }
-
-            if (organizeStage !== 'null') break;
 
             if (e.shiftKey) {
                 boxCorner = getMousePos();
@@ -357,6 +355,7 @@ canvas.addEventListener('mouseup', (e) => {
         }
         else if (draggingAtom !== -1) {
             draggingAtom = -1;
+            saveChange();
         }
         canvas.style.cursor = 'default';
     }
@@ -378,7 +377,8 @@ canvas.addEventListener('mousemove', (e) => {
         const diff = getMousePos().subtract(lastMousePos);
         
         if (e.ctrlKey) {
-            mol.translateOne(draggingAtom, diff);
+            if (mol.selectedAtoms.length > 0) mol.translateSome(diff, ...mol.selectedAtoms);
+            else mol.translateOne(draggingAtom, diff);
         }
         else {
             mol.translateAllConnected(draggingAtom, diff);
@@ -444,13 +444,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'KeyA') {
         if (e.shiftKey) {
             if (mol.selectedAtoms.length > 0) {
-                let i = 0;
-                let lastId = NaN;
-                for (const aid of mol.selectedAtoms) {
-                    if (lastId < aid) i++;
-                    mol.destroyAtom(aid - i);
-                    lastId = aid;
-                }
+                mol.destroyAtoms(...mol.selectedAtoms);
                 mol.selectedAtoms.length = 0;
                 saveChange();
                 return;

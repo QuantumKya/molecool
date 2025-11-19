@@ -139,6 +139,14 @@ class Molecule {
         this.atoms.splice(atomId, 1);
     }
 
+    destroyAtoms(...atomIds) {
+        for (const atomId of atomIds) {
+            const killList = this.bonds.filter(bond => (bond.atom1 === atomId || bond.atom2 === atomId));
+            killList.forEach(bond => this.destroyBond(bond.atom1, bond.atom2, bond.degree));
+        }
+        for (const atomId of atomIds.sort((a,b)=>b-a)) this.atoms.splice(atomId, 1);
+    }
+
     createBond(type, atom1, atom2, degree) {
         if (degree <= 0) {
             alert("Hey, there can't be a negative (or zero) covalent bond!");
@@ -148,13 +156,17 @@ class Molecule {
             alert("One or more of those molecules are already full.");
             return false;
         }
-        const match = this.bonds.find((bond) => (bond.atom1 === atom1 && bond.atom2 === atom2));
-        if (match) {
-            if (match.type !== type) {
+        const match = this.bonds.findIndex((bond) => (bond.atom1 === atom1 && bond.atom2 === atom2) || (bond.atom2 === atom1 && bond.atom1 === atom2));
+        if (match !== -1) {
+            if (this.bonds[match].type !== type) {
                 alert("A bond of a different type is already there.");
                 return false;
             }
-            match.degree += degree;
+            if (this.bonds[match].degree + degree <= 3) this.bonds[match].degree += degree;
+            else {
+                alert("Too much bonding! Sorry.");
+                return;
+            }
         }
         else {
             this.bonds.push({ type, atom1, atom2, degree });
@@ -392,11 +404,10 @@ class Molecule {
 
                 const orientAngles = [-Math.PI / 2, 0, Math.PI / 2];
 
-
-                orientAngles.forEach(angle => angle -= Math.sign(anchorside) * Math.PI / 2);
+                const anchOffset = -Math.sign(anchorside) * Math.PI / 2;
 
                 const offsetVectors = orientAngles.map(
-                    (angle, i) => polarVec(angle + initAngle, neighbors[i].pos.clone().subtract(centerPos).length())
+                    (angle, i) => polarVec(angle + initAngle + anchOffset, neighbors[i].pos.distance(centerPos))
                 );
                 return offsetVectors;
 
@@ -415,6 +426,10 @@ class Molecule {
     
     translateOne(id, delta) {
         this.atoms[id].pos.add(delta);
+    }
+
+    translateSome(delta, ...ids) {
+        for (const id of ids) this.atoms[id].pos.add(delta);
     }
 
     getFormula() {
