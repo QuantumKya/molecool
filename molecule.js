@@ -242,19 +242,19 @@ class Molecule {
     }
 
     findAllConnected(atomId) {
-        const allConnected = [atomId];
+        const allConnected = new Set();
+        allConnected.add(atomId);
         
         let sampleAtoms = this.findNeighborIndices(atomId);
-        let predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.includes(aid), false);
+        let predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.has(aid), false);
         while (predicate) {
-            const unfound = sampleAtoms.filter(aid => !allConnected.includes(aid));
-            allConnected.push(...unfound);
+            for (const atom of sampleAtoms) allConnected.add(atom);
 
-            sampleAtoms = unfound.map((aid) => this.findNeighborIndices(aid)).flat();
-            predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.includes(aid), false);
+            sampleAtoms = sampleAtoms.map((aid) => this.findNeighborIndices(aid)).flat();
+            predicate = sampleAtoms.reduce((pc, aid) => pc || !allConnected.has(aid), false);
         }
 
-        return allConnected;
+        return [...allConnected];
     }
 
     findInBox(c1, c2) {
