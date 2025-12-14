@@ -57,7 +57,8 @@ Here are all of the devlogs I've written for this project as I've made it. I hop
 [Devlog 18 - ~~Analysis Catalysis~~ Enzymatic Inhibition](./DEVLOG_18.md)  
 11/17/2025
 
-Turned in to Axiom v1!!!
+Turned in to Axiom v1!!!  
+11/18/2025 - 10:54 P.M. CST
 
 [Devlog 19 - Axiom V2](./DEVLOG_19.md)  
 12/13/2025
