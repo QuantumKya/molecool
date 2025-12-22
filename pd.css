@@ -1,6 +1,10 @@
 #periodic_table {
-    width: 100%;
-    min-width: 600px;
+    min-width: max-content;
+    background: #333333cc;
+    padding-left: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.25rem;
+    border-radius: 1rem;
 }
 
 #periodic_table > div {
@@ -10,7 +14,7 @@
 #periodic_table > div > div {
 	width: 5.5%;
 	display: inline-block;
-	margin-right: -7px;
+	margin-right: -5px;
 }
 
 #periodic_table > div > div > div {
@@ -22,6 +26,7 @@
     background: gray;
     margin-top: -3px;
     padding: 20% 0 20% 0;
+    min-width: 2.15em;
 
     user-select: none;
 }

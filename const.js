@@ -116,6 +116,10 @@ function getElement(symbol) {
     return Object.values(ELEMENTS).find(elem => elem.symbol === symbol);
 }
 
+function getElementName(symbol) {
+    return Object.entries(ELEMENTS).find(elem => elem[1].symbol === symbol)[0];
+}
+
 
 
 

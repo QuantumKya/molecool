@@ -15,6 +15,7 @@ moleculeinput.onchange = (e) => {
                     mol = decodeMoleculeJSON(fileContents);
                     saveChange();
                     break;
+                case 'molecule':
                 case 'mkf':
                     mol = cloneMolecule(decodeMolecule(fileContents));
                     console.log(testmol)
@@ -42,7 +43,7 @@ function encodeMolecule(molecule) {
     
     for (const atom of molecule.atoms) {
         const sym = atom.elemData.symbol;
-        const pos = `${String(Math.fround(atom.pos.x))},${String(Math.fround(atom.pos.y))}`;
+        const pos = `${String(Math.round(atom.pos.x))},${String(Math.round(atom.pos.y))}`;
         
         dataString += `${sym}${pos}`;
     }
@@ -55,7 +56,7 @@ function encodeMolecule(molecule) {
     dataString = dataString.slice(0, -1);
 
     const filename = prompt('What\'s your molecule called?', 'molecule');
-    saveTextToFile(dataString, `${filename}.mkf`);
+    saveTextToFile(dataString, `${filename}.molecule`);
 }
 
 function decodeMolecule(data) {
@@ -92,7 +93,7 @@ function encodeMoleculeJSON(molecule) {
     for (const atom of molecule.atoms) {
         molData.atoms.push({
             symbol: atom.elemData.symbol,
-            position: { x: Math.fround(atom.pos.x), y: Math.fround(atom.pos.y) }
+            position: { x: Math.round(atom.pos.x), y: Math.round(atom.pos.y) }
         });
     }
 

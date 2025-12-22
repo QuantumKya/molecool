@@ -51,6 +51,10 @@ function setDropdown(nodeid, value) {
     );
 }
 
+
+
+/* ------------------------ Periodic Table Menu ------------------------ */
+
 function closePeriodicTable() {
     const ptable = document.getElementById('periodic_table');
     ptable.style.display = 'none';
@@ -66,12 +70,12 @@ function initPeriodicTable() {
     for (const divpp of ptable.querySelectorAll('div')) {
         for (const divp of divpp.querySelectorAll('div')) {
             for (const div of divp.querySelectorAll('div')) {
-                const element = Object.entries(ELEMENTS).find(el => el[1].symbol === div.innerHTML);
+                const element = getElement(div.innerHTML);
                 if (!element) continue;
 
                 div.addEventListener('click', e => {
                     if (e.button === 0) {
-                        dropdowns['atomoptions'] = element[0];
+                        dropdowns['atomoptions'] = getElementName(div.innerHTML);
                         addAtomFromDropdown();
                         closePeriodicTable();
                     }

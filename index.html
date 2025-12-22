@@ -171,7 +171,7 @@
 
                 <div class="column-box">
 
-                    <button onclick="encodeMolecule(mol)">Save Molecule (.mkf)</button>
+                    <button onclick="encodeMolecule(mol)">Save Molecule (.molecule)</button>
                     <button onclick="encodeMoleculeJSON(mol)">Save Molecule (.json)</button>
 
                 </div>
@@ -181,7 +181,7 @@
                 <div class="column-box">
 
                     <button id="loadmolecule">Load Molecule</button>
-                    <input type="file" accept=".mkf, .json" style="display: none;">
+                    <input type="file" accept=".molecule, .json" style="display: none;">
 
                 </div>
 
@@ -200,7 +200,7 @@
 
     <div class="dropdown" id="atomoptions" style="position: absolute; z-index: 10; top: 0px; left: 0px;">
         <button class="dropdownbtn" onclick="openPeriodicTable()" style="display: none;">Atom Options</button>
-        <section style="margin-top: 35px; width: fit-content; display: none;" id="periodic_table">
+        <section style="width: fit-content; display: none;" id="periodic_table">
             <div>
                 <div>
                     <div class="reactive-nm">H</div>

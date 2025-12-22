@@ -446,7 +446,8 @@ class Molecule {
             const cObj = {};
             for (const aid of sec) {
                 const atom = this.atoms[aid];
-                const sym = atom.elemData.symbol + ['', '<sup>+</sup>', '<sup>-</sup>'].at(Math.sign(atom.charge));
+                const chargediff = Math.abs(atom.charge) > 1 ? Math.abs(atom.charge) : '';
+                const sym = atom.elemData.symbol + ['', `<sup>+${chargediff}</sup>`, `<sup>-${chargediff}</sup>`].at(Math.sign(atom.charge));
 
                 if (cObj[sym] === undefined) cObj[sym] = 0;
                 cObj[sym]++;
@@ -459,6 +460,16 @@ class Molecule {
         const kakhaga = (a, b) => {
             if (a[0] < b[0]) return -1;
             if (a[0] > b[0]) return 1;
+
+            if (a.length < b.length) return -1;
+            if (a.length > b.length) return 1;
+
+            let i = 1;
+            while (i < a.length) {
+                if (a[i] < b[i]) return -1;
+                if (a[i] > b[i]) return 1;
+                i++;
+            }
             return 0;
         }
 
