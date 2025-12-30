@@ -1,6 +1,6 @@
 
 let CURRENTFRAME = 0;
-const FPS = 30;
+const FPS = 50;
 
 function getCurrentFrame() { return CURRENTFRAME; }
 
@@ -160,15 +160,12 @@ function hexFromRGB(r, g, b, a = 255) {
     const ghex = g.toString(16).padStart(2, '0');
     const bhex = b.toString(16).padStart(2, '0');
     const ahex = a.toString(16).padStart(2, '0');
-    return '#'+ rhex + ghex + bhex + ahex;
+    return '#' + rhex + ghex + bhex + ahex;
 }
 
 function darkenColor(hex, darkFactor) {
     const rgb = RGBFromHex(hex);
-    rgb.r = Math.round(rgb.r * darkFactor);
-    rgb.g = Math.round(rgb.g * darkFactor);
-    rgb.b = Math.round(rgb.b * darkFactor);
-    return hexFromRGB(rgb.r, rgb.g, rgb.b, rgb.a);
+    return hexFromRGB(...Object.values(rgb).map(v => Math.round(v * darkFactor)));
 }
 
 function getTextColorFromBG(hex) {

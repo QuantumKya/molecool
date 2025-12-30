@@ -1,7 +1,7 @@
 :root, :root:has(.themelight) {
     --bg-color: #f2f2f2;
     --hover-bg: #7aaea5;
-    --border-color: #e3e5ea;
+    --border-color: #dcdee2;
     --text-color: #000000;
     --btn-color: #eeeeee;
     --panel-color: #ffffff;
@@ -35,6 +35,8 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
+
+    transition: 300ms ease-in-out;
 }
 
 button {
@@ -48,8 +50,6 @@ button {
     padding-left: 7px;
 
     width: fit-content;
-
-    transition: 300ms ease-in-out;
 }
 
 button:hover {
@@ -92,13 +92,20 @@ button:hover {
     height: 95vh;
 }
 
+#container * {
+    transition: 300ms ease-in-out;
+}
+
 #container > div {
+    flex-shrink: 0;
     flex-grow: 1;
 }
 
 #kansas {
     align-self: flex-start;
-    height: 100%;
+    flex-shrink: 1;
+    flex-grow: 0;
+    max-height: 100%;
     object-fit: contain;
 }
 

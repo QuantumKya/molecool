@@ -29,13 +29,16 @@
     min-width: 2.15em;
 
     user-select: none;
+    color: white;
 }
 
 #periodic_table .alkali {
+    color: black;
     background: rgb(255, 89, 80);
 }
 
 #periodic_table .alkaline {
+    color: white;
     background: rgb(183, 60, 53);
 }
 

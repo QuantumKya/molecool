@@ -225,7 +225,7 @@ canvas.addEventListener('mousedown', (e) => {
         case 2:
             if (bonding) {
                 bondingDegree++;
-                if (bondingDegree > 3 || bondingDegree <= 0) bondingDegree = 1;
+                if (bondingDegree > mol.atoms[bondingAtom].valence || bondingDegree <= 0) bondingDegree = 1;
                 break;
             }
 
@@ -574,6 +574,52 @@ function updateFormula() {
     document.getElementById('chemical-formula').innerHTML = mol.getFormula();
 }
 
+
+function runAnalyze() {
+    const { groups: matchedGroups, atoms: highlightAtoms } = mol.analyze();
+
+    const groupsStr = matchedGroups.length == 0 ? 'none' : matchedGroups.join(', ');
+
+    alert(`Groups found: ${groupsStr}`);
+    if (groupsStr === 'none') return;
+
+
+    const startFrame = CURRENTFRAME;
+    const flash = () => {
+        ctx.save();
+
+
+        const max = 210;
+        const min = 20;
+        const time = FPS/3;
+
+        const t = getCurrentFrame() - startFrame;
+        const intensity = (Math.floor(min + (1-Math.cos(Math.PI * t / time)) * (max-min) / 2)).toString(16);
+
+
+        ctx.fillStyle = `#ffff00${intensity}`;
+        for (const atom of highlightAtoms) {
+            const a = mol.atoms[atom];
+            ctx.beginPath();
+            ctx.arc(a.pos.x, a.pos.y, a.radius, 0, 360);
+            ctx.fill();
+        }
+
+        ctx.fillStyle = `#00ff00${intensity}`;
+        mol.atoms.forEach((a, i) => {
+            if (highlightAtoms.includes(i)) return;
+            ctx.beginPath();
+            ctx.arc(a.pos.x, a.pos.y, a.radius, 0, 360);
+            ctx.fill();
+        });
+        
+        ctx.restore();
+    }
+
+    setDraw('groupFlash', flash);
+    setTimeout(() => clearDraw('groupFlash'), 2000);
+}
+
 function init() {
     updateFormula();
 
@@ -596,7 +642,7 @@ function main() {
     
     let bgColor = '#87b5ffff';
 
-    if (organizeStage !== 'null' || bonding === true) bgColor = darkenColor(bgColor, 0.8);
+    if (organizeStage !== 'null' || bonding || addingAtom) bgColor = darkenColor(bgColor, 0.8);
     
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);

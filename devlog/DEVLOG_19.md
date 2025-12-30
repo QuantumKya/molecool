@@ -34,4 +34,4 @@ I fixed some bugs like bonding an atom to itself.
 
 Welcome back to my yappings!
 
-[<-- Previous Devlog](DEVLOG_18.md)<!--   [Next Devlog --\>](DEVLOG_19.md)-->
+[<-- Previous Devlog](DEVLOG_18.md)   [Next Devlog -->](DEVLOG_20.md)

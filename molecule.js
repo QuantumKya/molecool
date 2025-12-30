@@ -132,18 +132,25 @@ class Molecule {
         return undefined;
     }
 
-    destroyAtom(atomId) {
-        const killList = this.bonds.filter(bond => (bond.atom1 === atomId || bond.atom2 === atomId));
-        killList.forEach(bond => this.destroyBond(bond.atom1, bond.atom2, bond.degree));
+    findBond(atomId1, atomId2) {
+        return this.bonds.find(b => ((b.atom1 === atomId1) && (b.atom2 === atomId2)) || ((b.atom1 === atomId2) && (b.atom2 === atomId1)));
+    }
+    
+    findBondIndex(atomId1, atomId2) {
+        return this.bonds.findIndex(b => ((b.atom1 === atomId1) && (b.atom2 === atomId2)) || ((b.atom1 === atomId2) && (b.atom2 === atomId1)));
+    }
 
+    getBondsOf(atomId) {
+        return this.bonds.filter(bond => (bond.atom1 === atomId || bond.atom2 === atomId));
+    }
+
+    destroyAtom(atomId) {
+        this.destroyBondsOf(atomId);
         this.atoms.splice(atomId, 1);
     }
 
     destroyAtoms(...atomIds) {
-        for (const atomId of atomIds) {
-            const killList = this.bonds.filter(bond => (bond.atom1 === atomId || bond.atom2 === atomId));
-            killList.forEach(bond => this.destroyBond(bond.atom1, bond.atom2, bond.degree));
-        }
+        for (const atomId of atomIds) this.destroyBondsOf(atomId);
         for (const atomId of atomIds.sort((a,b)=>b-a)) this.atoms.splice(atomId, 1);
     }
 
@@ -156,7 +163,7 @@ class Molecule {
             alert("One or more of those molecules are already full.");
             return false;
         }
-        const match = this.bonds.findIndex((bond) => (bond.atom1 === atom1 && bond.atom2 === atom2) || (bond.atom2 === atom1 && bond.atom1 === atom2));
+        const match = this.findBondIndex(atom1, atom2);
         if (match !== -1) {
             if (this.bonds[match].type !== type) {
                 alert("A bond of a different type is already there.");
@@ -185,9 +192,7 @@ class Molecule {
             alert("Hey, there can't be a negative (or zero) covalent bond!");
             return;
         }
-        const bondIndex = this.bonds.findIndex((bond) => {
-            return (bond.atom1 === atomId1 && bond.atom2 === atomId2) || (bond.atom2 === atomId1 && bond.atom1 === atomId2);
-        });
+        const bondIndex = this.findBondIndex(atomId1, atomId2);
         if (bondIndex === -1) {
             alert("Uh, you're trying to break a bond that doesn't exist.\nThat sounds like it could be poetic but I can't let you do it here.");
             return;
@@ -214,6 +219,14 @@ class Molecule {
         else if (bond.degree <= degree) {
             this.bonds.splice(bondIndex, 1);
         }
+    }
+
+    destroyBondRef(bond) {
+        this.destroyBond(bond.atom1, bond.atom2, bond.degree);
+    }
+
+    destroyBondsOf(atomId) {
+        this.getBondsOf(atomId).forEach(b => this.destroyBondRef(b));
     }
 
     createCovalentBond(atomId1, atomId2, degree = 1) {
@@ -605,5 +618,161 @@ class Molecule {
 
 
         ctx.restore();
+    }
+
+    matchesFunctionalGroup(template) {
+        const atomCount = template.atoms.length;
+
+        // Candidate molecule atoms for each template atom
+        const candidates = template.atoms.map(sym =>
+            this.atoms
+                .map((atom, i) => sym.split(',').includes(atom.elemData.symbol) ? i : null)
+                .filter(sym => sym !== null)
+        );
+
+        // If any template atom has no candidates, impossible
+        if (candidates.some(c => c.length === 0)) return [];
+
+        // Try all combinations by permutations
+        const allPerms = candidates.reduce(
+            (acc, curr) =>  
+                acc.flatMap(a => curr.map(c => [...a, c])),
+            [[]]
+        ).filter(arr => arr.length === atomCount);
+
+        for (const perm of allPerms) {
+            // Ensure unique atoms
+            if (new Set(perm).size !== atomCount) continue;
+
+            // Check bonds
+            let valid = true;
+
+            for (const bond of template.bonds) {
+                const entries = bond.split(/[>:]/g);
+
+                const atomA = perm[Number(entries[0])];
+                const atomB = perm[Number(entries[1])];
+
+                const realBond = this.findBond(atomA, atomB);
+
+                const degree = entries[2] ? Number(entries[2]) : 1;
+
+                if (!realBond || realBond.degree !== degree) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) return perm;
+        }
+
+        return [];
+    }
+
+    analyze() {
+        const GROUPS = {
+            'hydroxy': new FunctionalGroupMolecule(
+                ['C', 'O', 'H'],
+                ['0>1', '1>2']
+            ),
+            'carboxyl': new FunctionalGroupMolecule(
+                ['C', 'O', 'O', 'H'],
+                ['0>1:2', '0>2', '2>3']
+            ),
+            'amino': new FunctionalGroupMolecule(
+                ['N', 'H', 'H'],
+                ['0>1', '0>2']
+            ),
+            'phosphate': new FunctionalGroupMolecule(
+                ['O', 'P', 'O', 'O', 'H', 'O', 'H'],
+                ['0>1', '1>2:2', '1>3', '3>4', '1>5', '5>6']
+            ),
+            'methyl': new FunctionalGroupMolecule(
+                ['C', 'H', 'H', 'H'],
+                ['0>1', '0>2', '0>3']
+            ),
+            'alkene': new FunctionalGroupMolecule(
+                ['C', 'C', 'H', 'H', 'H'],
+                ['0>1:2', '0>2', '1>3', '1>4']
+            ),
+            'alkyne': new FunctionalGroupMolecule(
+                ['C', 'C', 'H'],
+                ['0>1:3', '1>2']
+            ),
+            'benzene ring': new FunctionalGroupMolecule(
+                ['C', 'C', 'C', 'C', 'C', 'C'],
+                ['0>1:2', '1>2', '2>3:2', '3>4', '4>5:2', '5>1']
+            ),
+            'sulfate': new FunctionalGroupMolecule(
+                ['S', 'H'],
+                ['0>1']
+            ),
+            'aldehyde': new FunctionalGroupMolecule(
+                ['C', 'O', 'H'],
+                ['0>1:2', '0>2']
+            ),
+            'carboxylic acid': new FunctionalGroupMolecule(
+                ['C', 'O', 'O', 'H'],
+                ['0>1:2', '0>2', '2>3']
+            ),
+            'alkyl halide': new FunctionalGroupMolecule(
+                ['F,Cl,Br,I'],
+                []
+            )
+        };
+
+        const matches = [];
+        const allatoms = [];
+
+        for (const [name, fgmol] of Object.entries(GROUPS)) {
+            const highlightees = this.matchesFunctionalGroup(fgmol);
+            if (highlightees == '') continue;
+
+            matches.push(name);
+            allatoms.push(...highlightees);
+        }
+
+        return { groups: matches, atoms: allatoms };
+    }
+}
+
+const haveSameContents = (a, b) =>
+    a.length === b.length &&
+    [...new Set([...a, ...b])].every(
+    v => a.filter(e => e === v).length === b.filter(e => e === v).length
+);
+
+class FunctionalGroupMolecule {
+    constructor(atomStrs, bondStrs) {
+        this.atoms = atomStrs;
+        this.bonds = bondStrs;
+    }
+
+    isTheSame(otherOne) {
+        if (!haveSameContents(this.atoms, otherOne.atoms)) return false;
+        
+        if (haveSameContents(this.bonds, otherOne.bonds)) return true;
+
+        const duplicates = {};
+        this.atoms.forEach((atom, i) => {
+            if (duplicates[atom] === undefined) duplicates[atom] = [i];
+            else duplicates[atom].push(i);
+        });
+
+        Object.entries(duplicates).filter(ent => ent[1].length !== 1).forEach(ent => {
+            for (let i = 0; i < ent[1].length; i++) {
+                for (let j = i; j < ent[1].length; j++) {
+                    const numCycle = s => s.replaceAll(/\d+(?<!:)/g, match => {
+                        const number = parseInt(match, 10);
+                        if (number === i) return j.toString();
+                        if (number === j) return i.toString();
+                    });
+
+                    if (haveSameContents(this.bonds, otherOne.bonds.map(numCycle))) return true;
+                }
+            }
+        });
+
+        return false;
     }
 }

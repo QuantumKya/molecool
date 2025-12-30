@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="pd.css">
+    <link rel="stylesheet" href="tutorial.css">
 
     <script src="dropdown.js"></script>
     <link rel="stylesheet" href="dropdown.css">
@@ -88,7 +89,7 @@
 
                 <div class="column-box">
                     
-                    <a id="devloglink" href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md"
+                    <a id="devloglink" href="https://www.github.com/QuantumKya/molecool/blob/main/devlog/DEVLOGS.md" target="_blank" rel="noopener noreferrer"
                     style="display: none;"></a>
                     <button onclick="document.getElementById('devloglink').click()">Check out the project's devlogs here!!!</button>
                     
@@ -132,7 +133,7 @@
 
             <div class="row-box">
 
-                <div class="column-box">
+                <div class="column-box" style="width: min-content;">
 
                     <div class="dropdown" id="organizeoptions" style="min-width: 150px;">
                         <button class="dropdownbtn" onclick="dropdown('organizeoptions')">Organize Option</button>
@@ -147,12 +148,6 @@
                     </div>
 
                     <p style="padding: 0; margin: 0; font-size: small;">Snap to discrete angles by holding Shift while choosing the angle.</p>
-                    
-                    <div style="display: flex; flex-direction: row; height: 100%;">
-                        
-                        <button onclick="clearMolecule()" style="align-self: flex-end;">Clear Molecule</button>
-
-                    </div>
 
                 </div>
                 
@@ -183,6 +178,8 @@
                     <button id="loadmolecule">Load Molecule</button>
                     <input type="file" accept=".molecule, .json" style="display: none;">
 
+                    <button onclick="clearMolecule()" style="align-self: flex-end;">Clear Molecule</button>
+
                 </div>
 
                 <div class="vborder"></div>
@@ -190,6 +187,8 @@
                 <div class="column-box">
                     <button onclick="getCanvasImage()">Download Canvas</button>
                     <!-- <button onclick="getCanvasImage()">Download Diagram</button> -->
+
+                    <button onclick="runAnalyze()">Find Functional Groups</button>
                 </div>
 
             </div>
@@ -197,6 +196,15 @@
         </div>
         
     </div>
+
+    <!--<div id="tutorialpanel" style="position: absolute; left: 3vw; top: 3vh; z-index: 10;">
+        <h1 style="padding-left: 1rem;">Welcome to the Kitchen!</h1>
+
+        <div class="hborder"></div>
+
+        
+    </div>
+    -->
 
     <div class="dropdown" id="atomoptions" style="position: absolute; z-index: 10; top: 0px; left: 0px;">
         <button class="dropdownbtn" onclick="openPeriodicTable()" style="display: none;">Atom Options</button>
