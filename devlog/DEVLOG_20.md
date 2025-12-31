@@ -71,8 +71,13 @@ I'll add more functional groups to the list that it searches for. Here are the o
 You may notice that some important ones are missing. That's because, sadly, my code doesn't work for groups with more than one R group (distinct or symmetric).  I'll try to add that soon, but for now it works great for what it can do!
 
 <br>
+
+P.S.
+Turns out that the `.mkf` file format is already taken... by karaoke software. So from now on, it'll just be `.molecule`. Bummer.
+
+<br>
 <br>
 
-Have fun not being confused, and see you next time!
+Good Group-Finding!!!
 
-[<-- Previous Devlog](DEVLOG_19.md)<!--   [Next Devlog --\>](DEVLOG_21.md)-->
+[<-- Previous Devlog](DEVLOG_19.md)   [Next Devlog -->](DEVLOG_21.md)

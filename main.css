@@ -96,11 +96,6 @@ button:hover {
     transition: 300ms ease-in-out;
 }
 
-#container > div {
-    flex-shrink: 0;
-    flex-grow: 1;
-}
-
 #kansas {
     align-self: flex-start;
     flex-shrink: 1;
@@ -109,13 +104,13 @@ button:hover {
     object-fit: contain;
 }
 
-
-
 #controlpanel {
     margin-left: 10px;
     background-color: var(--panel-color);
     padding: 10px;
 }
+
+
 
 .hborder {
     border: var(--border-color) solid 2px;

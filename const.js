@@ -18,6 +18,8 @@ let CTRLING = false;
 
 
 
+const BONDWIDTH = 10;
+
 const shells = [2, 8, 8, 18, 18, 32, 32];
 
 const ELEMENTS = {

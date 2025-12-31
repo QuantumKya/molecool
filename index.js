@@ -410,7 +410,7 @@ document.addEventListener('keydown', (e) => {
 
         if (bonding) {
             bonding = false;
-            clearDraw('bondtext');
+            clearDraw('bonding');
         }
 
         if (addingAtom) {
@@ -500,7 +500,7 @@ document.addEventListener('keydown', (e) => {
                 bondingType = 'covalent';
                 bondingDegree = 1;
 
-                setDraw('bondtext', (ctx) => {
+                setDraw('bonding', (ctx) => {
                     ctx.save();
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'black';
@@ -510,6 +510,22 @@ document.addEventListener('keydown', (e) => {
                     ctx.fillText('Right click to change degree of bond, Left click to change type', canvas.width / 2, 45);
                     ctx.fillText(`Bond degree: ${bondingDegree}`, canvas.width / 2, 75);
                     ctx.fillText(`Bond type: ${bondingType}`, canvas.width / 2, 105);
+                    ctx.restore();
+
+                    const mousepos = getMousePos();
+                    const atompos = mol.atoms[bondingAtom].pos;
+
+                    ctx.save();
+                    
+                    ctx.globalAlpha = 0.5;
+
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = BONDWIDTH;
+                    ctx.beginPath();
+                    ctx.moveTo(atompos.x, atompos.y);
+                    ctx.lineTo(mousepos.x, mousepos.y);
+                    ctx.stroke();
+
                     ctx.restore();
                 });
             }
@@ -522,7 +538,7 @@ document.addEventListener('keydown', (e) => {
                 bonding = false;
                 bondingAtom = -1;
                 bondingType = '';
-                clearDraw('bondtext');
+                clearDraw('bonding');
 
                 saveChange();
             }
@@ -585,7 +601,7 @@ function runAnalyze() {
 
 
     const startFrame = CURRENTFRAME;
-    const flash = () => {
+    const flash = (ctx) => {
         ctx.save();
 
 

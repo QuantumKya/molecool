@@ -1,0 +1,39 @@
+#periodic_table {
+    background-color: #00000000;
+    font-size: 1.5rem;
+    font-family: 'Google Sans Code';
+    width: 75vw;
+
+    position: absolute;
+    z-index: 1;
+    left: 10vw;
+    top: 50%;
+    translate: 0 -50%;
+}
+
+#periodic_table > div > div {
+    width: 5.5%;
+    margin-right: -15px;
+}
+
+#textbox {
+    display: none;
+    background-color: white;
+    color: black;
+    text-shadow: 1px 1px #ccccccaa;
+    border: 6px black;
+    border-radius: 15px;
+
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    min-width: 10em;
+    max-width: 25em;
+    min-height: 4em;
+    max-height: 10em;
+
+    font-family: 'Google Sans Code';
+    font-weight: 800;
+    padding: 1em;
+}

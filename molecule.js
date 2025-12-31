@@ -19,8 +19,6 @@ class Molecule {
     }
 
     draw(ctx) {
-        const BONDWIDTH = 10;
-        
         for (const bond of this.bonds) {
             const pos1 = this.atoms[bond.atom1].pos;
             const pos2 = this.atoms[bond.atom2].pos;
@@ -736,43 +734,9 @@ class Molecule {
     }
 }
 
-const haveSameContents = (a, b) =>
-    a.length === b.length &&
-    [...new Set([...a, ...b])].every(
-    v => a.filter(e => e === v).length === b.filter(e => e === v).length
-);
-
 class FunctionalGroupMolecule {
     constructor(atomStrs, bondStrs) {
         this.atoms = atomStrs;
         this.bonds = bondStrs;
-    }
-
-    isTheSame(otherOne) {
-        if (!haveSameContents(this.atoms, otherOne.atoms)) return false;
-        
-        if (haveSameContents(this.bonds, otherOne.bonds)) return true;
-
-        const duplicates = {};
-        this.atoms.forEach((atom, i) => {
-            if (duplicates[atom] === undefined) duplicates[atom] = [i];
-            else duplicates[atom].push(i);
-        });
-
-        Object.entries(duplicates).filter(ent => ent[1].length !== 1).forEach(ent => {
-            for (let i = 0; i < ent[1].length; i++) {
-                for (let j = i; j < ent[1].length; j++) {
-                    const numCycle = s => s.replaceAll(/\d+(?<!:)/g, match => {
-                        const number = parseInt(match, 10);
-                        if (number === i) return j.toString();
-                        if (number === j) return i.toString();
-                    });
-
-                    if (haveSameContents(this.bonds, otherOne.bonds.map(numCycle))) return true;
-                }
-            }
-        });
-
-        return false;
     }
 }
