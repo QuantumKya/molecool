@@ -1,0 +1,52 @@
+<h1 style="margin-bottom: 15px;">The Making and the Breaking</h1>
+
+<span>
+    <button onclick="loadTutorial('tutorial')">Previous Tutorial</button>
+    <button onclick="loadTutorial('orientation')">Next Tutorial</button>
+</span>
+
+<div class="hborder"></div>
+
+<a style="font-size: small; margin-bottom: 20px;" href="https://github.com/QuantumKya/molecule-kitchen/blob/main/tutorialstuff/MAKING&BREAKING.md" target="_blank" rel="noopener noreferrer">Tutorial on GitHub (Markdown)</a>
+
+<h2>Making Atoms</h2>
+
+<p>To make an atom, press A while hovering over the canvas. This will open up the periodic table menu, which lets you pick any (supported) atom!
+    <br>Click on your desired atom and it will pop into existence at the location of your initial A press.</p>
+<img src="tutorialstuff/img/periodic_table_menu.png" alt="Periodic Table Menu">
+
+<h2>Making Bonds</h2>
+
+<p>Once you have two atoms, you can bond them! Press B while hovering over an atom. This will initiate <b><i>bonding mode</i></b>!
+    <br>At this point you can change the order or the type of the bond; the controls for those are written on-canvas when bonding.</p>
+<img src="tutorialstuff/img/bonding_HF.png" alt="Bonding Two Atoms">
+
+<h2><s>Brownian</s> Motion</h2>
+
+<p>To move your molecule, simply left click and drag any atom of it. Any connected atoms will move along with whichever one you drag. Unconnected ones won't be phased.
+    <br>If you want to move a single atom independently of the others, hold Control while dragging the atom.</p>
+<img src="devlog/img/devlog_2_the-water-situation.png" alt="Moving An Atom">
+
+<h2>Breaking Atoms & Bonds</h2>
+
+<p>Now that we have atoms, let's destroy them!
+    <br>Press Shift+A while hovering over an atom to get rid of it. Doing this will also destroy any bonds made with the atom.</p>
+
+<p>What if you want to get rid of a bond? Do the same thing. Hover over a bond (the black line) and press Shift+B. This will destroy the bond, but not the atoms involved.</p>
+
+<h2>Selecting Multiple Atoms</h2>
+
+<p>If you want to move some atoms, but not all the connected ones, you can select only some by holding Shift and left clicking and dragging. This allows you to select every atom within a rectangular area.
+    <br>From here, you can move them by simply holding Ctrl and clicking and dragging like usual.</p>
+
+<p>You can press Shift+A to delete all of the atoms selected, or you can press Shift+B to delete every bond between the atoms you've selected.</p>
+
+<h2>Undo and Redo</h2>
+
+<p>Chemistry is hard. If you make a mistake, press Ctrl+Z to undo your last change.</p>
+<p>If you change your mind, press Ctrl+Y or Ctrl+Shift+Z to redo that undoing.</p>
+
+<span>
+    <button onclick="loadTutorial('tutorial')">Previous Tutorial</button>
+    <button onclick="loadTutorial('orientation')">Next Tutorial</button>
+</span>

@@ -122,3 +122,19 @@ function decodeMoleculeJSON(data) {
     moleculeData.bonds.forEach(bond => molecule.createBond(bond.type, bond.atomId1, bond.atomId2, bond.order));
     return molecule;
 }
+
+function saveTextToFile(data, filename) {
+    const dataBlob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(dataBlob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    workSaved = true;
+}

@@ -1,4 +1,4 @@
-## Devlog #21 - 12/30/2025
+## Devlog #21 - 12/31/2025
 # Chemistry Class
 
 #### Science can be confusing...
@@ -7,26 +7,22 @@ I was shown that my program DESPERATELY needs some tutorials or something, becau
 
 ## Making the Thing
 
-I started by making a panel that can show up from the left. It looked like this when it didn't have anything on it.
+I started by making a panel that can show up from the left. It looked like this when it didn't have anything on it.  
+![Initial Panel](img/devlog_21_initial.png)
 
+Then, I populated it with all of the necessary info.
+- Adding and deleting atoms
+- Adding and deleting bonds
+- Moving, undoing, and redoing
+- Using the orientation tools
+- Finding functional groups and formulae
 
+## JS Tutorial Loading System
 
+I made some JS code that loads a tutorial into the tutorial panel from an HTML file. I then used this code to make buttons that allow you to switch between them, going to the next or previous tutorial.  
+Finally, I made a button on the website which opens the tutorial panel.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-P.S.
-Turns out that the `.mkf` file format is already taken... by karaoke software. So from now on, it'll just be `.molecule`. Bummer.
+![Final Panel & Button](img/devlog_21_final.png)
 
 <br>
 <br>

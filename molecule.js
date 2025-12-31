@@ -23,9 +23,11 @@ class Molecule {
             const pos1 = this.atoms[bond.atom1].pos;
             const pos2 = this.atoms[bond.atom2].pos;
 
+            const color = [bond.atom1, bond.atom2].map(i=>this.atoms[i]).some(a => (a.valence < 0) || (a.valence > a.elemData.valence)) ? `#${getIntOscillation(getCurrentFrame(), FPS/1.75, 120, 240).toString(16)}0000` : 'black';
+
             ctx.save();
-            ctx.strokeStyle = 'black';
-            ctx.fillStyle = 'black';
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
             ctx.lineWidth = BONDWIDTH;
 
             if (bond.degree === 1) {
@@ -51,7 +53,9 @@ class Molecule {
         for (let i = 0; i < this.atoms.length; i++) {
             const atom = this.atoms[i];
 
-            atom.draw(ctx);
+            (atom.valence < 0) || (atom.valence > atom.elemData.valence)
+            ? atom.drawFromPos(ctx, atom.pos.clone().add(new Victor(10*(0.5-Math.random()), 5*(0.5-Math.random()))))
+            : atom.draw(ctx);
 
             if (this.selectedAtoms.includes(i)) {
                 ctx.save();
@@ -157,21 +161,26 @@ class Molecule {
             alert("Hey, there can't be a negative (or zero) covalent bond!");
             return false;
         }
+        /*
         if (degree > this.atoms[atom1].valence || degree > this.atoms[atom2].valence) {
             alert("One or more of those molecules are already full.");
             return false;
         }
+        */
         const match = this.findBondIndex(atom1, atom2);
         if (match !== -1) {
             if (this.bonds[match].type !== type) {
                 alert("A bond of a different type is already there.");
                 return false;
             }
+            this.bonds[match].degree += Math.min(4-this.bonds[match].degree, degree);
+            /*
             if (this.bonds[match].degree + degree <= 3) this.bonds[match].degree += degree;
             else {
                 alert("Too much bonding! Sorry.");
                 return;
             }
+            */
         }
         else {
             this.bonds.push({ type, atom1, atom2, degree });
@@ -306,6 +315,25 @@ class Molecule {
                 return angleA - angleB;
             }
         );
+
+        const connected = neighbors.map((n,i) => {
+            const paths = [[n]];
+            const visited = new Set([this.atoms[atomId], n]);
+
+            while (paths.length > 0) {
+                const currentPath = paths.shift();
+                const currentAtom = currentPath.at(-1);
+
+                for (const a of this.findNeighbors(this.atoms.indexOf(currentAtom))) {
+                    if (visited.has(a)) continue;
+                    visited.add(a);
+                    const newPath = [...currentPath, a];
+                    paths.push(newPath);
+                }
+            }
+
+            return [...visited].toSpliced(0,2);
+        });
         
         while (this.atoms.indexOf(neighbors[0]) !== anchorId) {
             neighbors.push(neighbors.shift());
@@ -318,19 +346,32 @@ class Molecule {
 
 
 
-        const animDuration = 15;
+        const animDuration = FPS/2;
 
         const startFrame = getCurrentFrame();
 
         const startPositions = neighbors.map(neigh => neigh.pos.clone());
+        const startConnectedPositions = connected.map(set => set.map(n => n.pos.clone()));
         const targetPositions = offsetVectors.map(vec => centerPos.clone().add(vec));
+        const targetConnectedPositions = connected.map((set,i) => set.map(n => {
+            const offsetFromNeighbor = n.pos.clone().subtract(neighbors[i].pos);
+            const rotatedOffset = offsetFromNeighbor.clone().rotate(
+                targetPositions[i].clone().subtract(centerPos).angle() -
+                startPositions[i].clone().subtract(centerPos).angle()
+            );
+            return targetPositions[i].clone().add(rotatedOffset);
+        }));
 
         const moveAnimation = () => {
             const framesElapsed = getCurrentFrame() - startFrame;
             const lerprogress = framesElapsed / animDuration;
 
             neighbors.forEach((neigh, i) => {
+                const thisconnected = connected[i];
                 neigh.pos = polarLerp(startPositions[i], targetPositions[i], lerprogress, centerPos, ccwise);
+                thisconnected.forEach((conn, c) => {
+                    conn.pos = polarLerp(startConnectedPositions[i][c], targetConnectedPositions[i][c], lerprogress, centerPos, ccwise);
+                });
             });
             
             if (framesElapsed >= animDuration) {
@@ -504,11 +545,16 @@ class Molecule {
                 (Object.keys(cObj).includes('C')) ? carbon : kakhaga
             );
 
+            let totalCharge = 0;
             const str = sortedPairs.map(pair => {
-                const s = `${pair[0]}<sub>${pair[1]}</sub>`;
+                if (pair[0].includes('<sup>')) {
+                    const ch = pair[0].search(/\d+(?=<\/sup>)/g);
+                    totalCharge += pair[0].includes('+') ? ch : -ch;
+                }
+                const s = `${pair[0].split('<')[0]}<sub>${pair[1]}</sub>`;
                 if (pair[1] === 1) return s.split('<sub>')[0];
                 return s;
-            }).join('');
+            }).join('') + (totalCharge === 0 ? '' : `<sup>${(totalCharge < 0 ? '-' : '+') + (Math.abs(totalCharge) === 1 ? '' : Math.abs(totalCharge).toString(10))}</sup>`);
             return str;
         });
 

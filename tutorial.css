@@ -3,5 +3,22 @@
     color: var(--text-color);
 
     padding: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
     border: 3px var(--border-color);
+
+    position: absolute;
+    left: 1.5vw;
+    top: 3vh;
+    z-index: 10;
+
+    max-width: 32rem;
+    max-height: 85%;
+    overflow: scroll;
+
+    font-family: 'Google Sans Code';
+}
+
+#tutorialpanel img {
+    width: 85%;
 }

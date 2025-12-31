@@ -110,9 +110,14 @@
             <div class="hborder"></div>
 
             <div class="column-box manual">
-                <h2>EDITING SHORTCUTS</h2>
                 
-                <div class="row-box" style="margin-bottom: 10px;">
+                <div class="row-box">
+                    <h2 style="align-self: center; margin-top: 0;">EDITING SHORTCUTS</h2>
+                    <div class="vborder"></div>
+                    <button onclick="loadTutorial('tutorial')" style="height: min-content; align-self: center;">Open Tutorial</button>
+                </div>
+                
+                <div class="row-box" style="margin-bottom: 10px; margin-top: -15px;">
                     
                     <div id="editmanual">
                         <p><b>Left Click &amp; Drag</b> — move molecule</p>
@@ -133,6 +138,7 @@
 
             <div class="hborder"></div>
 
+            <!-- Orientation Tools -->
             <div class="row-box">
 
                 <div class="column-box" style="width: min-content;">
@@ -164,6 +170,7 @@
 
             <div class="hborder"></div>
 
+            <!-- Saving & Loading -->
             <div class="row-box">
 
                 <div class="column-box">
@@ -199,7 +206,7 @@
         
     </div>
 
-    <!-- <div id="tutorialpanel"></div> -->
+    <div id="tutorialpanel" style="display: none; transition: 300ms ease-in;"></div>
 
     <div class="dropdown" id="atomoptions" style="position: absolute; z-index: 10; top: 0px; left: 0px;">
         <button class="dropdownbtn" onclick="openPeriodicTable()" style="display: none;">Atom Options</button>

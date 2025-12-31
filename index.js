@@ -106,6 +106,12 @@ function loadTemplateMolecule() {
 
 // undo/redo stuff
 
+let workSaved = true;
+window.addEventListener('beforeunload', e => {
+    if (!workSaved) e.preventDefault();
+    e.returnValue = '';
+});
+
 function cloneMolecule(molecule) {
     const mAtoms = molecule.atoms.map((a) => {
         const newA = new Atom(a.elemData, new Victor(a.pos.x, a.pos.y));
@@ -124,6 +130,7 @@ let stateIndex = 0;
 
 function updateState() {
     mol = cloneMolecule(stateBuffer[stateIndex]);
+    workSaved = false;
 }
 
 function undo() {
@@ -225,7 +232,7 @@ canvas.addEventListener('mousedown', (e) => {
         case 2:
             if (bonding) {
                 bondingDegree++;
-                if (bondingDegree > mol.atoms[bondingAtom].valence || bondingDegree <= 0) bondingDegree = 1;
+                if (bondingDegree > 3 || bondingDegree <= 0) bondingDegree = 1;
                 break;
             }
 
@@ -275,7 +282,6 @@ canvas.addEventListener('mousedown', (e) => {
                         break;
                     }
 
-                    console.log(Molecule.transformFunctions);
                     if (Molecule.transformFunctions[orgoption].needsAngle) {
                         organizeStage = 'setAngle';
 
@@ -544,6 +550,19 @@ document.addEventListener('keydown', (e) => {
             }
         }
     }
+    /*
+    else if (e.code === 'KeyR') {
+        if (hovereeId === undefined) return;
+
+        if (e.shiftKey) {
+            mol.atoms[hovereeId].charge++;
+        }
+        else {
+            mol.atoms[hovereeId].charge--;
+        }
+        saveChange();
+    }
+    */
 });
 document.addEventListener('keyup', (e) => {
     if (e.key === 'Shift') SHIFTING = false;
@@ -574,6 +593,7 @@ function clearMolecule() {
 
     mol = new Molecule();
     saveChange();
+    workSaved = true;
 }
 
 
@@ -586,7 +606,6 @@ function clearDraw(name) {
 }
 
 function updateFormula() {
-    console.log(mol.getFormula());
     document.getElementById('chemical-formula').innerHTML = mol.getFormula();
 }
 

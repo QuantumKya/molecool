@@ -4,6 +4,8 @@ const FPS = 50;
 
 function getCurrentFrame() { return CURRENTFRAME; }
 
+function getIntOscillation(t, p, min, max) { return Math.floor(min + (1 - Math.cos(2 * Math.PI * t / p)) * (max-min) / 2); }
+
 
 const CANVASWIDTH = 850;
 const CANVASHEIGHT = 850;
@@ -239,18 +241,4 @@ function toTitle(str) {
         i++;
     }
     return amendee;
-}
-
-function saveTextToFile(data, filename) {
-    const dataBlob = new Blob([data], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(dataBlob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
 }
