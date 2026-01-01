@@ -29,4 +29,4 @@ Finally, I made a button on the website which opens the tutorial panel.
 
 Have fun not being confused, and see you next time!
 
-[<-- Previous Devlog](DEVLOG_20.md)<!--   [Next Devlog --\>](DEVLOG_22.md)-->
+[<-- Previous Devlog](DEVLOG_20.md)   [Next Devlog -->](DEVLOG_22.md)

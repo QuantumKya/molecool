@@ -31,6 +31,30 @@ const ELEMENTS = {
         valence: 1,
         color: '#ffffff',
     },
+    helium: {
+        number: 2,
+        symbol: 'He',
+        valence: 0,
+        color: '#ffeded'
+    },
+    lithium: {
+        number: 3,
+        symbol: 'Li',
+        valence: -1,
+        color: '#ecb394'
+    },
+    beryllium: {
+        number: 4,
+        symbol: 'Be',
+        valence: 2,
+        color: '#938a7e'
+    },
+    boron: {
+        number: 5,
+        symbol: 'B',
+        valence: 3,
+        color: '#987a5b'
+    },
     carbon: {
         number: 6,
         symbol: 'C',
@@ -49,59 +73,6 @@ const ELEMENTS = {
         valence: 2,
         color: '#ba0909',
     },
-    sodium: {
-        number: 11,
-        symbol: 'Na',
-        valence: 1,
-    },
-    phosphorus: {
-        number: 15,
-        symbol: 'P',
-        valence: 3,
-        color: '#c18f2c',
-    },
-    sulfur: {
-        number: 16,
-        symbol: 'S',
-        valence: 2,
-        color: '#ecd800',
-    },
-    chlorine: {
-        number: 17,
-        symbol: 'Cl',
-        valence: 1,
-        color: '#00e980',
-    },
-    potassium: {
-        number: 19,
-        symbol: 'K',
-        valence: 1,
-        color: '#cecece',
-    },
-    helium: {
-        number: 2,
-        symbol: 'He',
-        valence: 0,
-        color: '#ffeded'
-    },
-    lithium: {
-        number: 3,
-        symbol: 'Li',
-        valence: 1,
-        color: '#ecb394'
-    },
-    beryllium: {
-        number: 4,
-        symbol: 'Be',
-        valence: 2,
-        color: '#938a7e'
-    },
-    boron: {
-        number: 5,
-        symbol: 'B',
-        valence: 3,
-        color: '#987a5b'
-    },
     flourine: {
         number: 9,
         symbol: 'F',
@@ -113,6 +84,162 @@ const ELEMENTS = {
         symbol: 'Ne',
         valence: 0,
         color: '#4be791'
+    },
+    sodium: {
+        number: 11,
+        symbol: 'Na',
+        valence: -1,
+        color: '#ff1500',
+    },
+    magnesium: {
+        number: 12,
+        symbol: 'Mg',
+        valence: -2,
+        color: '#e45c32',
+    },
+    aluminum: {
+        number: 13,
+        symbol: 'Al',
+        valence: -3,
+        color: '#c3d0d9',
+    },
+    silicon: {
+        number: 14,
+        symbol: 'Si',
+        valence: 4,
+        color: '#7393b3'
+    },
+    phosphorus: {
+        number: 15,
+        symbol: 'P',
+        valence: 3,
+        color: '#c18f2c',
+    },
+    sulfur: {
+        number: 16,
+        symbol: 'S',
+        valence: 6,
+        color: '#ecd800',
+    },
+    chlorine: {
+        number: 17,
+        symbol: 'Cl',
+        valence: 1,
+        color: '#00e980',
+    },
+    argon: {
+        number: 18,
+        symbol: 'Ar',
+        valence: 0,
+        color: '#c097e3'
+    },
+    potassium: {
+        number: 19,
+        symbol: 'K',
+        valence: -1,
+        color: '#cecece',
+    },
+    calcium: {
+        number: 20,
+        symbol: 'Ca',
+        valence: -2,
+        color: '#f1f1f1',
+    },
+    scandium: {
+        number: 21,
+        symbol: 'Sc',
+        valence: 3,
+        color: '#b0c4de'
+    },
+    titanium: {
+        number: 22,
+        symbol: 'Ti',
+        valence: 4,
+        color: '#c2d6d6'
+    },
+    vanadium: {
+        number: 23,
+        symbol: 'V',
+        valence: 5,
+        color: '#9fb1c8'
+    },
+    chromium: {
+        number: 24,
+        symbol: 'Cr',
+        valence: 6,
+        color: '#8aa29a'
+    },
+    manganese: {
+        number: 25,
+        symbol: 'Mn',
+        valence: 7,
+        color: '#d08b6a'
+    },
+    iron: {
+        number: 26,
+        symbol: 'Fe',
+        valence: 2,
+        color: '#b7410e'
+    },
+    cobalt: {
+        number: 27,
+        symbol: 'Co',
+        valence: 2,
+        color: '#2a52be'
+    },
+    nickel: {
+        number: 28,
+        symbol: 'Ni',
+        valence: 2,
+        color: '#50c878'
+    },
+    copper: {
+        number: 29,
+        symbol: 'Cu',
+        valence: 1,
+        color: '#b87333'
+    },
+    zinc: {
+        number: 30,
+        symbol: 'Zn',
+        valence: 2,
+        color: '#7da0b0'
+    },
+    gallium: {
+        number: 31,
+        symbol: 'Ga',
+        valence: 3,
+        color: '#c39bd3'
+    },
+    germanium: {
+        number: 32,
+        symbol: 'Ge',
+        valence: 4,
+        color: '#9ea7a6'
+    },
+    arsenic: {
+        number: 33,
+        symbol: 'As',
+        valence: 3,
+        color: '#6e6e6e'
+    },
+    selenium: {
+        number: 34,
+        symbol: 'Se',
+        valence: 2,
+        color: '#ffcc99'
+    },
+    bromine: {
+        number: 35,
+        symbol: 'Br',
+        valence: 1,
+        color: '#a52a2a'
+    },
+    krypton: {
+        number: 36,
+        symbol: 'Kr',
+        valence: 0,
+        color: '#9be3ff'
     }
 };
 
@@ -124,7 +251,32 @@ function getElementName(symbol) {
     return Object.entries(ELEMENTS).find(elem => elem[1].symbol === symbol)[0];
 }
 
-
+const subscriptMap = {
+    '0': '₀',
+    '1': '₁',
+    '2': '₂',
+    '3': '₃',
+    '4': '₄',
+    '5': '₅',
+    '6': '₆',
+    '7': '₇',
+    '8': '₈',
+    '9': '₉'
+};
+const superscriptMap = {
+    '0': '⁰',
+    '1': '¹',
+    '2': '²',
+    '3': '³',
+    '4': '⁴',
+    '5': '⁵',
+    '6': '⁶',
+    '7': '⁷',
+    '8': '⁸',
+    '9': '⁹'
+};
+const toSubscript = (n) => String(n).split('').map(d => subscriptMap[d]).join('');
+const toSuperscript = (n) => String(n).split('').map(d => superscriptMap[d]).join('');
 
 
 // I got this function from a Medium article; https://colton-shawn-oconnor.medium.com/changing-text-color-based-on-the-background-in-javascript-947bf9bc136b
@@ -232,7 +384,7 @@ function clampToAngleSpace(angle) {
 function toTitle(str) {
     const check = /[\s\d]/g;
     
-    let amendee = str.split(check).map(str => str.charAt(0).toUpperCase() + str.slice(1)).join('');
+    let amendee = str.split(check).map(str => str.charAt(0).toUpperCase() + str.slice(1)).join('').replaceAll('_', ' ');
     let i = 0;
     for (let ii = 0; ii < str.length; ii++) {
         if (check.test(str[ii])) amendee = amendee.slice(0, ii + i) + str[ii] + amendee.slice(ii + i);
@@ -241,4 +393,10 @@ function toTitle(str) {
         i++;
     }
     return amendee;
+}
+
+function roundVec(vec, amount) {
+    const rx = Math.round(vec.x / amount) * amount;
+    const ry = Math.round(vec.y / amount) * amount;
+    return new Victor(rx, ry);
 }

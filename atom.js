@@ -11,9 +11,9 @@ class Atom {
         for (const size of shells) {
             e -= size;
             count++;
-            if (e < 0) break;
+            if (e <= 0) break;
         }
-        this.radius = 45 + 7.5 * count;
+        this.radius = 42.5 + 7.5 * count;
         if (element.symbol === 'H') this.radius = 40;
     }
 
@@ -49,7 +49,9 @@ class Atom {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = `${TEXTSIZE*this.radius/75}px Arial`;
-        ctx.fillText(this.elemData.symbol + ['', '⁺', '⁻'].at(Math.sign(this.charge)), position.x, position.y);
+
+        const chargeNum = Array.from(String(Math.abs(this.charge)), Number).map(n=>superscriptMap[n]).join('');
+        ctx.fillText(this.elemData.symbol + ['', '⁺', '⁻'].at(Math.sign(this.charge)) + (Math.abs(this.charge) > 1 ? chargeNum : ''), position.x, position.y);
     }
 
     checkIfMouseHover() {

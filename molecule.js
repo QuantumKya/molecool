@@ -2,6 +2,7 @@ class Molecule {
     constructor(...atoms) {
         this.atoms = atoms;
         this.bonds = [];
+        this.ionizations = atoms.map(a=>0);
 
         this.selectedAtoms = [];
     }
@@ -19,11 +20,13 @@ class Molecule {
     }
 
     draw(ctx) {
+        const shakecheck = (a) => (a.elemData.valence >= 0) ? (a.valence > a.elemData.valence || a.valence < 0) : (a.valence < a.elemData.valence || a.valence > 0);
+        
         for (const bond of this.bonds) {
             const pos1 = this.atoms[bond.atom1].pos;
             const pos2 = this.atoms[bond.atom2].pos;
 
-            const color = [bond.atom1, bond.atom2].map(i=>this.atoms[i]).some(a => (a.valence < 0) || (a.valence > a.elemData.valence)) ? `#${getIntOscillation(getCurrentFrame(), FPS/1.75, 120, 240).toString(16)}0000` : 'black';
+            const color = [bond.atom1, bond.atom2].map(i=>this.atoms[i]).some(shakecheck) ? `#${getIntOscillation(getCurrentFrame(), FPS/1.75, 120, 240).toString(16)}0000` : 'black';
 
             ctx.save();
             ctx.strokeStyle = color;
@@ -53,7 +56,7 @@ class Molecule {
         for (let i = 0; i < this.atoms.length; i++) {
             const atom = this.atoms[i];
 
-            (atom.valence < 0) || (atom.valence > atom.elemData.valence)
+            shakecheck(atom)
             ? atom.drawFromPos(ctx, atom.pos.clone().add(new Victor(10*(0.5-Math.random()), 5*(0.5-Math.random()))))
             : atom.draw(ctx);
 
@@ -79,7 +82,7 @@ class Molecule {
     drawIonicBond(ctx, p1, p2) {
         const dist = p1.distance(p2);
         const direction = p2.clone().subtract(p1).normalize();
-        const sectlength = 90;
+        const sectlength = 60;
 
         const times = Math.round(dist / sectlength);
 
@@ -149,11 +152,15 @@ class Molecule {
     destroyAtom(atomId) {
         this.destroyBondsOf(atomId);
         this.atoms.splice(atomId, 1);
+        this.ionizations.splice(atomId, 1);
     }
 
     destroyAtoms(...atomIds) {
         for (const atomId of atomIds) this.destroyBondsOf(atomId);
-        for (const atomId of atomIds.sort((a,b)=>b-a)) this.atoms.splice(atomId, 1);
+        for (const atomId of atomIds.sort((a,b)=>b-a)) {
+            this.atoms.splice(atomId, 1);
+            this.ionizations.splice(atomId, 1);
+        }
     }
 
     createBond(type, atom1, atom2, degree) {
@@ -185,11 +192,18 @@ class Molecule {
         else {
             this.bonds.push({ type, atom1, atom2, degree });
         }
-        this.atoms[atom1].valence -= degree;
-        this.atoms[atom2].valence -= degree;
-        if (type === 'ionic') {
+
+        if (type === 'covalent') {
+            this.atoms[atom1].valence -= degree;
+            this.atoms[atom2].valence -= degree;
+        }
+        else if (type === 'ionic') {
+            // cation
             this.atoms[atom1].charge += degree;
+            this.atoms[atom1].valence += degree;
+            // anion
             this.atoms[atom2].charge -= degree;
+            this.atoms[atom2].valence -= degree;
         }
         return true;
     }
@@ -242,6 +256,22 @@ class Molecule {
 
     createIonicBond(donor, recipient, degree = 1) {
         this.createBond('ionic', donor, recipient, degree);
+    }
+
+    ionize(atomId, amount) {
+        if (this.ionizations[atomId] === undefined) this.ionizations[atomId] = 0;
+        this.ionizations[atomId] += amount;
+        this.atoms[atomId].charge += amount;
+    }
+
+    reduce(atomId, amount = 1) {
+        if (amount <= 0) return;
+        this.ionize(atomId, -amount);
+    }
+
+    oxidize(atomId, amount = 1) {
+        if (amount <= 0) return;
+        this.ionize(atomId, amount);
     }
 
     findNeighborIndices(atomId) {
@@ -494,18 +524,23 @@ class Molecule {
 
         // get counts per section
         const counts = [];
+        const sectionCharges = [];
         for (const sec of sections) {
             const cObj = {};
+            let sectionCharge = 0;
             for (const aid of sec) {
                 const atom = this.atoms[aid];
+                sectionCharge += atom.charge || 0;
+
                 const chargediff = Math.abs(atom.charge) > 1 ? Math.abs(atom.charge) : '';
-                const sym = atom.elemData.symbol + ['', `<sup>+${chargediff}</sup>`, `<sup>-${chargediff}</sup>`].at(Math.sign(atom.charge));
+                const sym = atom.elemData.symbol;
 
                 if (cObj[sym] === undefined) cObj[sym] = 0;
                 cObj[sym]++;
             }
 
             counts.push(cObj);
+            sectionCharges.push(sectionCharge);
         }
 
         // if no carbon, sort alphabetically
@@ -540,22 +575,26 @@ class Molecule {
         }
 
         // get each part's formula
-        const sectionStrs = counts.map((cObj) => {
-            const sortedPairs = Object.entries(cObj).toSorted(
-                (Object.keys(cObj).includes('C')) ? carbon : kakhaga
-            );
+        const sectionStrs = counts.map((cObj, idx) => {
+            const hasCarbon = Object.keys(cObj).some(k => k.startsWith('C'));
+            const sortedPairs = Object.entries(cObj).toSorted(hasCarbon ? carbon : kakhaga);
 
-            let totalCharge = 0;
-            const str = sortedPairs.map(pair => {
-                if (pair[0].includes('<sup>')) {
-                    const ch = pair[0].search(/\d+(?=<\/sup>)/g);
-                    totalCharge += pair[0].includes('+') ? ch : -ch;
-                }
-                const s = `${pair[0].split('<')[0]}<sub>${pair[1]}</sub>`;
-                if (pair[1] === 1) return s.split('<sub>')[0];
-                return s;
-            }).join('') + (totalCharge === 0 ? '' : `<sup>${(totalCharge < 0 ? '-' : '+') + (Math.abs(totalCharge) === 1 ? '' : Math.abs(totalCharge).toString(10))}</sup>`);
-            return str;
+            const totalCharge = sectionCharges[idx];
+
+            const str = sortedPairs.map(([sym, count]) => {
+                if (count === 1) return sym;
+                return `${sym}${toSubscript(count)}`;
+            }).join('');
+
+            // build unicode superscript for net charge (sign then magnitude)
+            let netChargeSup = '';
+            if (totalCharge !== 0) {
+                const signChar = totalCharge > 0 ? '⁺' : '⁻';
+                const mag = Math.abs(totalCharge);
+                const magSup = mag > 1 ? String(mag).split('').map(d => superscriptMap[d]).join('') : '';
+                netChargeSup = signChar + magSup;
+            }
+            return str + netChargeSup;
         });
 
         const seenObj = {};

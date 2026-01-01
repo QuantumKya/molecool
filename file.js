@@ -43,7 +43,7 @@ function encodeMolecule(molecule) {
     
     for (const atom of molecule.atoms) {
         const sym = atom.elemData.symbol;
-        const pos = `${String(Math.round(atom.pos.x))},${String(Math.round(atom.pos.y))}`;
+        const pos = `${String(truncateToDecimals(atom.pos.x, 3))},${String(truncateToDecimals(atom.pos.y, 3))}`;
         
         dataString += `${sym}${pos}`;
     }
@@ -56,6 +56,7 @@ function encodeMolecule(molecule) {
     dataString = dataString.slice(0, -1);
 
     const filename = prompt('What\'s your molecule called?', 'molecule');
+    if (filename === null) return;
     saveTextToFile(dataString, `${filename}.molecule`);
 }
 
@@ -93,7 +94,7 @@ function encodeMoleculeJSON(molecule) {
     for (const atom of molecule.atoms) {
         molData.atoms.push({
             symbol: atom.elemData.symbol,
-            position: { x: Math.round(atom.pos.x), y: Math.round(atom.pos.y) }
+            position: { x: truncateToDecimals(atom.pos.x, 3), y: truncateToDecimals(atom.pos.y, 3) }
         });
     }
 
@@ -108,6 +109,7 @@ function encodeMoleculeJSON(molecule) {
     }
 
     const filename = prompt('What\'s your molecule called?', 'molecule');
+    if (filename === null) return;
     saveTextToFile(JSON.stringify(molData), `${filename}.json`);
 }
 
@@ -137,4 +139,9 @@ function saveTextToFile(data, filename) {
     URL.revokeObjectURL(url);
 
     workSaved = true;
+}
+
+function truncateToDecimals(num, decimals) {
+    const factor = Math.pow(10, decimals);
+    return Math.trunc(num * factor) / factor;
 }
