@@ -74,7 +74,8 @@ function decodeMolecule(data) {
     }
     
     const molecule = new Molecule(...atoms);
-    
+    if (!bondData) return molecule;
+
     const bondSections = bondData.split(/[:>^,]/g);
     console.log(bondSections);
     for (let i = 0; i < bondSections.length; i += 4) {
